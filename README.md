@@ -1,4 +1,4 @@
-# ShopWave: website tools and in-chat MCP Apps
+# ShopWave: website tools, in-chat MCP Apps and AEO
 
 The website below is a frontend-only demo. No database or API keys. The shop is one JSON
 document (seeded from `shared/products.json`, then stored in your browser's `localStorage`).
@@ -21,6 +21,20 @@ npm run start:mcp
 
 Use `npm run preview:mcp` to rehearse the embedded UI in a local host simulator. Use `npm run dev` for the website.
 
+## Answer engine optimisation (AEO)
+
+`set_aeo_metadata` is the one tool that writes catalog data. It stores what answer engines and search engines quote
+for a product: `summary` (a short direct answer), `faqs`, `keywords`, `seo_title` (60 characters) and
+`meta_description` (160). Only the fields you pass are changed; `faqs` and `keywords` replace the existing lists.
+Overlong text returns a warning. It is available on the website (WebMCP) and on the MCP server.
+
+- `src/aeo.js` turns the metadata into schema.org JSON-LD (`Product` with offers and stock status, plus `FAQPage`),
+  a page title and a meta description. `src/views/ProductPage.jsx` calls it and also shows the quick answer and FAQs.
+- The MCP App shows the quick answer and FAQs on the product view.
+- The JSON-LD is written by JavaScript in the browser, so it is visible to browser agents and crawlers that run
+  JavaScript. Crawlers that only read raw HTML will not see it.
+- Write factual content only. The tool never invents product facts for you.
+
 ## Run the website
 
 ```bash
@@ -28,7 +42,7 @@ npm install
 npm run dev
 ```
 
-Opens http://localhost:5173 (Node 22.12+). The footer shows **WebMCP: N tools live** (12 tools) when your browser exposes `document.modelContext` or `navigator.modelContext`.
+Opens http://localhost:5173 (Node 22.12+). The footer shows **WebMCP: N tools live** (13 tools) when your browser exposes `document.modelContext` or `navigator.modelContext`.
 
 ## Component library (widgets)
 
@@ -84,10 +98,11 @@ restore the seed data.
 Discover: `search_products`, `get_product`, `check_availability`, `add_to_wishlist`, `remove_from_wishlist`, `get_wishlist`.
 Cart: `add_to_cart`, `set_cart_quantity`, `get_cart`, `remove_from_cart`.
 Buy: `place_order`, `get_orders`.
+Catalog content: `set_aeo_metadata`.
 
 Tool definitions live in `shared/tools/definitions.js`. `shared/tools/handlers.js` calls the store rules.
 `src/webmcp-tools.js` adds website navigation (so people can watch the agent work) and `src/webmcp.js`
-registers the tools in the browser. There are no tools that edit products, stock or the catalog.
+registers the tools in the browser. The only tool that writes catalog data is `set_aeo_metadata`; there are no tools that edit products or stock.
 
 ## WebMCP and ChatGPT: setup and troubleshooting
 

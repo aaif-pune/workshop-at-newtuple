@@ -25,6 +25,7 @@ export const api = {
   searchProducts: wrap(store.search),
   getProduct: wrap(store.getProduct),
   getVariant: wrap(store.getVariant),
+  setMetadata: wrap(store.setMetadata),
   getWishlist: wrap(store.getWishlist),
   addToWishlist: wrap(store.addToWishlist),
   removeFromWishlist: wrap(store.removeFromWishlist),

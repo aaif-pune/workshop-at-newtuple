@@ -4,3 +4,6 @@
 
 
 .thumbs{display:flex;gap:8px;overflow-x:auto}.thumbs button{flex:none;width:60px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:none}.thumbs button.on{border-color:var(--brand)}
+/* ---------- AEO: quick answer and FAQs ---------- */
+.quick{margin:10px 0;padding:9px 12px;border-left:3px solid var(--brand);background:var(--soft);border-radius:0 8px 8px 0}
+.faq details{border-bottom:1px solid var(--line);padding:10px 0}.faq summary{cursor:pointer;font-weight:600}.faq p{margin:6px 0 0;color:var(--mute)}

@@ -5,6 +5,7 @@ import { useApi } from '../hooks'
 import { navigate } from '../router'
 import { CardGrid, Photo, Stepper } from '../widgets'
 import { Empty, StockBadge, money } from '../components'
+import { applyHead } from '../aeo'
 import ProductCard from './ProductCard'
 
 export default function ProductPage({ id, run, setFilters }) {
@@ -14,6 +15,9 @@ export default function ProductPage({ id, run, setFilters }) {
   const [qty, setQty] = useState(1)
   const [shot, setShot] = useState(0)
   useEffect(() => setShot(0), [id])
+  // AEO: page title, meta description and schema.org JSON-LD for this product.
+  const headKey = p ? JSON.stringify([p.name, p.description, p.images, p.metadata, p.specs, p.variants.map((x) => [x.sku, x.price, x.status])]) : ''
+  useEffect(() => (p ? applyHead(p) : undefined), [headKey]) // eslint-disable-line react-hooks/exhaustive-deps
   if (p === null) return null
   if (p === false) return <Empty>Product not found. <a href="#/">Back to shop</a></Empty>
   const v = p.variants.find((x) => x.id === sel) || p.variants.find((x) => x.quantity > 0) || p.variants[0]
@@ -42,6 +46,7 @@ export default function ProductPage({ id, run, setFilters }) {
           <span className="w-eyebrow">{p.category}</span>
           <h1>{p.name}</h1>
           <p className="desc">{p.description}</p>
+          {p.metadata?.summary && <p className="quick"><strong>In short:</strong> {p.metadata.summary}</p>}
           <div className="price big">{money(v.price)} <span className="sub">per unit, delivery included</span></div>
           <div className="row">
             <StockBadge v={v} />
@@ -84,6 +89,11 @@ export default function ProductPage({ id, run, setFilters }) {
       {Object.keys(p.specs).length > 0 && (
         <section className="specs"><h2>Specifications</h2>
           <table><tbody>{Object.entries(p.specs).map(([k, val]) => <tr key={k}><th>{k.replace(/_/g, ' ')}</th><td>{val}</td></tr>)}</tbody></table>
+        </section>
+      )}
+      {p.metadata?.faqs?.length > 0 && (
+        <section className="faq"><h2>Questions and answers</h2>
+          {p.metadata.faqs.map((f) => <details key={f.question}><summary>{f.question}</summary><p>{f.answer}</p></details>)}
         </section>
       )}
       {related.length > 0 && <section><h2>More in {p.category}</h2><CardGrid min={220}>{related.map((r) => <ProductCard key={r.id} p={r} run={run} />)}</CardGrid></section>}

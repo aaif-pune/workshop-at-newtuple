@@ -21,6 +21,7 @@ export function createWebTools(store, showInUI) {
     remove_from_cart: async (a) => handlers.remove_from_cart(a),
     place_order: async (a) => { const r = await handlers.place_order(a); showInUI({ view: 'orders', placed: r.id }); return r },
     get_orders: async () => { showInUI({ view: 'orders' }); return handlers.get_orders() },
+    set_aeo_metadata: async (a) => { const r = await handlers.set_aeo_metadata(a); showInUI({ view: 'product', productId: a.product_id }); return r },
   }
 
   return webToolDefinitions.map(definition => ({ ...definition, run: runs[definition.name] }))

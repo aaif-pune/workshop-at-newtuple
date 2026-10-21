@@ -193,6 +193,26 @@ export const toolDefinitions = {
       schema: ({ id }) => ({ variant_id: id }),
     },
   },
+  set_aeo_metadata: {
+    web: {
+      "description": "Add answer-engine (AEO) metadata to a product so AI assistants and search engines can quote it correctly: a short direct-answer summary, FAQs, keywords, a page title and meta description. Published on the product page as schema.org JSON-LD. Only fields you pass are changed; faqs and keywords replace the existing lists. Write factual content only.",
+      "properties": {
+        "product_id": { "type": "integer" },
+        "seo_title": { "type": "string", "description": "Page title, 60 characters or fewer" },
+        "meta_description": { "type": "string", "description": "Search snippet, 160 characters or fewer" },
+        "summary": { "type": "string", "description": "Direct answer to \"what is this and who is it for\", 1 to 3 sentences" },
+        "faqs": { "type": "array", "items": { "type": "object", "properties": { "question": { "type": "string" }, "answer": { "type": "string" } }, "required": ["question", "answer"] } },
+        "keywords": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["product_id"]
+    },
+    mcp: { title: 'Set AEO metadata', description: 'Add answer-engine metadata (quick answer, FAQs, keywords, page title, meta description) to a product. Only supplied fields change. Write factual content from the catalog or the user; never invent claims.', readOnly: false,
+      schema: ({ z, id }) => ({
+    product_id: id, seo_title: z.string().optional(), meta_description: z.string().optional(), summary: z.string().optional(),
+    faqs: z.array(z.object({ question: z.string().trim().min(1), answer: z.string().trim().min(1) })).max(20).optional(), keywords: z.array(z.string()).optional(),
+  }),
+    },
+  },
   show_checkout: {
     mcp: { title: 'Checkout form', description: 'Open the demo checkout form for the current cart. No payment, shipment or email. Use sample details.', readOnly: true,
       schema: () => ({}),
@@ -253,7 +273,7 @@ export const webToolDefinitions = Object.entries(toolDefinitions)
   .map(([name, definition]) => ({ name, ...definition.web }))
 
 // Preserve the server's existing discovery order.
-const mcpToolOrder = ["search_products","get_product","check_availability","get_cart","add_to_cart","set_cart_quantity","remove_from_cart","get_wishlist","add_to_wishlist","remove_from_wishlist","show_checkout","place_order","get_orders"]
+const mcpToolOrder = ["search_products","get_product","check_availability","get_cart","add_to_cart","set_cart_quantity","remove_from_cart","get_wishlist","add_to_wishlist","remove_from_wishlist","show_checkout","place_order","get_orders","set_aeo_metadata"]
 
 export function createMcpToolDefinitions(z) {
   const id = z.number().int().positive()

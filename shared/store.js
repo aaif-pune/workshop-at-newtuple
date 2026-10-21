@@ -62,7 +62,7 @@ export function createStore(storage) {
       id: product.id, name: product.name, category: product.category,
       description: product.description, specs: product.specs, image: product.image || null,
       images: product.images?.length ? product.images : product.image ? [product.image] : [],
-      variants,
+      metadata: product.metadata || null, variants,
       price_from: Math.min(...variants.map((v) => v.price)),
       total_quantity: variants.reduce((s, v) => s + v.quantity, 0),
       status: variants.some((v) => v.status === 'in_stock') ? 'in_stock'
@@ -126,6 +126,38 @@ export function createStore(storage) {
     state.wishlist = state.wishlist.filter((v) => v !== id)
     save(state)
     return { ok: true, wishlist_size: state.wishlist.length }
+  }
+
+  // AEO (answer engine optimisation) metadata: the facts an AI assistant or search engine can quote.
+  function setMetadata({ product_id, seo_title, meta_description, summary, faqs, keywords } = {}) {
+    const state = load()
+    const product = state.products.find((p) => p.id === int(product_id, 'product_id'))
+    if (!product) throw new Error(`Product ${product_id} not found`)
+    const m = { ...(product.metadata || {}) }
+    const warnings = []
+    const set = []
+    const text = (v, name) => { const s = String(v ?? '').trim(); m[name] = s; set.push(name); return s }
+    if (seo_title !== undefined && text(seo_title, 'seo_title').length > 60) warnings.push('seo_title is over 60 characters and may be cut off in search results')
+    if (meta_description !== undefined && text(meta_description, 'meta_description').length > 160) warnings.push('meta_description is over 160 characters and may be cut off')
+    if (summary !== undefined && text(summary, 'summary').split(/\s+/).length > 60) warnings.push('summary is long. A 1 to 3 sentence direct answer is quoted more often')
+    if (faqs !== undefined) {
+      if (!Array.isArray(faqs) || faqs.length > 20) throw new Error('faqs must be a list of up to 20 { question, answer } items')
+      m.faqs = faqs.map((f) => {
+        const question = String(f?.question ?? '').trim(), answer = String(f?.answer ?? '').trim()
+        if (!question || !answer) throw new Error('every FAQ needs a question and an answer')
+        return { question, answer }
+      })
+      set.push('faqs')
+    }
+    if (keywords !== undefined) {
+      if (!Array.isArray(keywords)) throw new Error('keywords must be a list of strings')
+      m.keywords = [...new Set(keywords.map((k) => String(k).trim().toLowerCase()).filter(Boolean))]
+      set.push('keywords')
+    }
+    if (!set.length) throw new Error('Nothing to set. Pass at least one of: seo_title, meta_description, summary, faqs, keywords.')
+    product.metadata = m
+    save(state)
+    return { ok: true, product_id: product.id, product_name: product.name, updated: set, metadata: m, warnings }
   }
 
   // ---- cart ----
@@ -200,7 +232,7 @@ export function createStore(storage) {
 
   return {
     subscribe: (fn) => { listeners.add(fn); return () => listeners.delete(fn) },
-    notify, categories, search, getProduct, getVariant,
+    notify, categories, search, getProduct, getVariant, setMetadata,
     getWishlist, addToWishlist, removeFromWishlist,
     getCart, addToCart, setCartQuantity, removeFromCart,
     placeOrder, getOrders, reset,

@@ -27,6 +27,11 @@ export function createActions(store = createDemoStore()) {
     get_wishlist: () => snapshot('wishlist'),
     add_to_wishlist: ({ variant_id }) => { handlers.add_to_wishlist({ variant_id }); return snapshot('wishlist') },
     remove_from_wishlist: ({ variant_id }) => { handlers.remove_from_wishlist({ variant_id }); return snapshot('wishlist') },
+    set_aeo_metadata: args => {
+      const result = handlers.set_aeo_metadata(args)
+      return snapshot('product', { product: handlers.get_product({ product_id: result.product_id }),
+        message: `AEO metadata saved: ${result.updated.join(', ')}.${result.warnings.length ? ' ' + result.warnings.join(' ') : ''}` })
+    },
     show_checkout: () => {
       if (!handlers.get_cart().items.length) throw new Error('Add a product to your cart before checkout.')
       return snapshot('checkout')

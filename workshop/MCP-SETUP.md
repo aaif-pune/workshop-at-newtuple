@@ -2,7 +2,7 @@
 
 This branch brings the same sample catalog into an interactive conversation. The website uses WebMCP; the Node process exposes MCP tools and an MCP Apps UI. No model API key, database, authentication service, or payment integration is required by this code.
 
-The agent can only do what a shopper does: browse and filter, save to a wishlist, manage a cart, check out and read its order summary. There are no tools that edit products, stock or the catalog.
+The agent can do what a shopper does: browse and filter, save to a wishlist, manage a cart, check out and read its order summary. The only tool that writes catalog data is `set_aeo_metadata` (answer-engine metadata, see the README). There are no tools that edit products or stock.
 
 ## Folder map
 
@@ -18,8 +18,8 @@ The agent can only do what a shopper does: browse and filter, save to a wishlist
 
 - `shared/tools/definitions.js` is the tool catalog. Each tool has browser and/or MCP metadata, including the MCP server's stricter Zod validation. Zod is supplied by the server, not bundled into the website.
 - `shared/tools/handlers.js` maps tool arguments to the shared store operations. Both adapters use these handlers with their own store instance.
-- `src/webmcp-tools.js` adds website navigation; `src/webmcp.js` registers the 12 browser tools.
-- `mcp-server/actions.js` adds widget views, the confirmation check and customer-data redaction. `mcp-server/server.js` registers the 13 MCP tools and the UI resource using the shared catalog.
+- `src/webmcp-tools.js` adds website navigation; `src/webmcp.js` registers the 13 browser tools.
+- `mcp-server/actions.js` adds widget views, the confirmation check and customer-data redaction. `mcp-server/server.js` registers the 14 MCP tools and the UI resource using the shared catalog.
 
 The browser uses localStorage; the MCP process uses memory shared by its connected hosts. Sharing code does not merge those stores. WebMCP checkout takes flat customer fields; MCP checkout requires `{ customer, confirmed: true }`. `show_checkout` exists only on the MCP side because it opens the checkout form in the chat.
 
@@ -28,6 +28,7 @@ The browser uses localStorage; the MCP process uses memory shared by its connect
 | Discover | `search_products`, `get_product`, `check_availability`, `get_wishlist`, `add_to_wishlist`, `remove_from_wishlist` |
 | Cart | `get_cart`, `add_to_cart`, `set_cart_quantity`, `remove_from_cart` |
 | Buy | `show_checkout`, `place_order`, `get_orders` |
+| Catalog content | `set_aeo_metadata` |
 
 ## Install
 

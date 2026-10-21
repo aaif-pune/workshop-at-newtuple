@@ -15,5 +15,6 @@ export function createToolHandlers(store) {
     remove_from_cart: ({ variant_id }) => store.removeFromCart(variant_id),
     place_order: customer => store.placeOrder(customer),
     get_orders: () => store.getOrders(),
+    set_aeo_metadata: args => store.setMetadata(args),
   }
 }

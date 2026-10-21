@@ -122,3 +122,6 @@ main{max-width:var(--maxw);margin:0 auto;padding:24px 24px 56px}.page{max-width:
 /* ---------- product gallery, quick answer, FAQ ---------- */
 .gallery{display:flex;flex-direction:column;gap:10px;min-width:0}
 .thumbs{display:flex;gap:8px;overflow-x:auto}.thumbs button{flex:none;width:68px;padding:0;border:2px solid transparent;border-radius:calc(var(--r) - 2px);overflow:hidden;background:none}.thumbs button.on{border-color:var(--brand)}
+/* ---------- AEO: quick answer and FAQs ---------- */
+.quick{margin:0;padding:10px 14px;border-left:3px solid var(--brand);background:var(--soft);border-radius:0 var(--btn-r) var(--btn-r) 0;font-size:14px}
+.faq{margin-bottom:36px;max-width:760px}.faq details{border-bottom:1px solid var(--line);padding:12px 0}.faq summary{cursor:pointer;font-weight:600}.faq p{margin:8px 0 0;color:var(--mute)}
