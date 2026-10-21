@@ -1,8 +1,25 @@
-# ShopWave: website tools with WebMCP
+# ShopWave: website tools and in-chat MCP Apps
 
 The website below is a frontend-only demo. No database or API keys. The shop is one JSON
 document (seeded from `shared/products.json`, then stored in your browser's `localStorage`).
 The React UI and the WebMCP tools use the same `src/api.js`.
+
+## MCP server and in-chat store
+
+This branch also contains a Node MCP server (`mcp-server/`) and an embedded React store (`mcp-app/`).
+They reuse `shared/store.js` and `shared/products.json`, with in-memory state and no database.
+The website keeps browser storage.
+
+Read **[MCP setup and demo guide](workshop/MCP-SETUP.md)** for installation, local preview, and the
+ChatGPT and Claude connections.
+
+```sh
+npm install
+npm run build
+npm run start:mcp
+```
+
+Use `npm run preview:mcp` to rehearse the embedded UI in a local host simulator. Use `npm run dev` for the website.
 
 ## Run the website
 
@@ -91,5 +108,4 @@ The footer pill shows what it found; hover it for details.
 
 ## Other
 
-- Data lives per browser profile and per origin. Open the same `localhost` URL in the agent's browser and your own, and they are separate shops.
-- Data is not shared between different ports or browsers.
+- Website data lives per browser profile and per origin. The MCP server keeps its own in-memory shop; the two do not sync.

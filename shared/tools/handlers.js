@@ -1,5 +1,6 @@
-// Transport-independent commerce operations, backed by the store rules.
-// Keep UI navigation and response formatting in the adapter (src/webmcp-tools.js).
+// Transport-independent commerce operations. Each adapter supplies its own store:
+// localStorage in the website, process memory in the MCP server.
+// Keep UI navigation, confirmation policy and response formatting in adapters.
 export function createToolHandlers(store) {
   return {
     search_products: args => store.search(args),
