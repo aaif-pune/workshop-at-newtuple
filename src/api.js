@@ -1,6 +1,6 @@
 // The storefront "API". Same shape as a REST client (async, JSON in, JSON out),
 // but the data lives in a JSON document in localStorage, so there is no server.
-// The React UI goes through this one file.
+// The React UI and the WebMCP tools both go through this one file.
 import { createStore } from './services/store'
 
 const memory = new Map()

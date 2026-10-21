@@ -3,6 +3,8 @@ import { Heart, Package, Search, ShoppingCart } from 'lucide-react'
 import { api } from './api'
 import { useApi } from './hooks'
 import { navigate, useRoute } from './router'
+import { onUIRequest } from './ui-bus'
+import { startWebMCP, tools } from './webmcp'
 import { DEFAULT_THEME, inferCategory, themeFor } from './themes'
 import Home, { DEFAULT_FILTERS } from './views/Home'
 import ProductPage from './views/ProductPage'
@@ -12,12 +14,24 @@ import Checkout from './views/Checkout'
 import Orders from './views/Orders'
 import Widgets from './views/Widgets'
 
+const VIEW_PATH = { shop: '/', cart: '/cart', wishlist: '/wishlist', orders: '/orders', checkout: '/checkout' }
+
 export default function App() {
   const route = useRoute()
   const [filters, setFilters] = useState(DEFAULT_FILTERS)
   const [search, setSearch] = useState('')
   const [toast, setToast] = useState(null)
   const [themeCat, setThemeCat] = useState('')
+  const [mcp, setMcp] = useState({ supported: false, count: 0, where: '', error: '' })
+  useEffect(() => startWebMCP(setMcp), [])
+
+  useEffect(() => onUIRequest((d) => {
+    if (d.filters) { setFilters({ ...DEFAULT_FILTERS, ...d.filters }); setSearch(d.filters.query || '') }
+    if (d.view === 'product') navigate('/product/' + d.productId)
+    else if (d.view === 'orders' && d.placed) navigate('/orders?placed=' + d.placed)
+    else if (d.view) navigate(VIEW_PATH[d.view] || '/')
+  }), [])
+
   const categories = useApi(api.categories, [], [])
   const wishlist = useApi(api.getWishlist, [], [])
   const cart = useApi(api.getCart, [], { item_count: 0 })
@@ -76,6 +90,7 @@ export default function App() {
         {route.page === 'widgets' && <Widgets />}
       </main>
 
+      {!mcp.supported && <p className="hint">WebMCP is not available in this browser. Test tools in DevTools: <code>await storefrontTools.search_products({'{query:"headphones"}'})</code></p>}
       <footer className="foot">
         <div>
           <strong>ShopWave</strong>
@@ -84,6 +99,9 @@ export default function App() {
         <div className="footlinks">
           <a href="#/widgets">Component library</a>
           <button onClick={() => confirm('Reset all demo data?') && run(api.reset, 'Demo data reset')}>Reset demo data</button>
+          <span className={'pill ' + (mcp.supported ? 'good' : 'warn')} title={mcp.supported ? `via ${mcp.where}\n` + tools.map((x) => x.name).join('\n') : mcp.error || 'document.modelContext not found in this browser'}>
+            WebMCP: {mcp.supported ? `${mcp.count} tools live` : 'not detected'}
+          </span>
         </div>
       </footer>
 
