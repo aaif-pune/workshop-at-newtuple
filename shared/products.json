@@ -1,0 +1,750 @@
+[
+ {
+  "id": 1,
+  "name": "Wireless Noise-Cancelling Headphones",
+  "category": "Electronics",
+  "description": "Over-ear Bluetooth headphones with 30-hour battery and active noise cancellation.",
+  "specs": {
+   "battery": "30 hours",
+   "connectivity": "Bluetooth 5.3",
+   "warranty": "1 year"
+  },
+  "image": "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb",
+  "variants": [
+   {
+    "id": 1,
+    "sku": "SW-001-1",
+    "label": "Black",
+    "price": 7999,
+    "quantity": 0
+   },
+   {
+    "id": 2,
+    "sku": "SW-001-2",
+    "label": "Silver",
+    "price": 7999,
+    "quantity": 0
+   },
+   {
+    "id": 3,
+    "sku": "SW-001-3",
+    "label": "Blue",
+    "price": 8499,
+    "quantity": 3
+   }
+  ]
+ },
+ {
+  "id": 2,
+  "name": "Smartphone 128GB",
+  "category": "Electronics",
+  "description": "6.5-inch AMOLED display, 50MP camera and all-day battery.",
+  "specs": {
+   "display": "6.5\" AMOLED",
+   "storage": "128 GB",
+   "warranty": "1 year"
+  },
+  "image": "https://images.unsplash.com/photo-1757710436034-f1d7372ec1be",
+  "variants": [
+   {
+    "id": 4,
+    "sku": "SW-002-1",
+    "label": "Midnight",
+    "price": 18999,
+    "quantity": 12
+   },
+   {
+    "id": 5,
+    "sku": "SW-002-2",
+    "label": "Ocean Blue",
+    "price": 18999,
+    "quantity": 5
+   },
+   {
+    "id": 6,
+    "sku": "SW-002-3",
+    "label": "Sunset Gold",
+    "price": 19499,
+    "quantity": 1
+   }
+  ]
+ },
+ {
+  "id": 3,
+  "name": "Smartwatch Fitness Tracker",
+  "category": "Electronics",
+  "description": "Heart-rate, sleep and step tracking with a 7-day battery.",
+  "specs": {
+   "battery": "7 days",
+   "water_resistance": "5 ATM"
+  },
+  "image": "https://images.unsplash.com/photo-1624096104992-9b4fa3a279dd",
+  "variants": [
+   {
+    "id": 7,
+    "sku": "SW-003-1",
+    "label": "Black strap",
+    "price": 3499,
+    "quantity": 25
+   },
+   {
+    "id": 8,
+    "sku": "SW-003-2",
+    "label": "Green strap",
+    "price": 3499,
+    "quantity": 9
+   }
+  ]
+ },
+ {
+  "id": 4,
+  "name": "Portable Bluetooth Speaker",
+  "category": "Electronics",
+  "description": "Waterproof pocket speaker with 12 hours of playtime.",
+  "specs": {
+   "battery": "12 hours",
+   "water_resistance": "IPX7"
+  },
+  "image": "https://images.unsplash.com/photo-1582978571763-2d039e56f0c3",
+  "variants": [
+   {
+    "id": 9,
+    "sku": "SW-004-1",
+    "label": "Black",
+    "price": 2299,
+    "quantity": 30
+   },
+   {
+    "id": 10,
+    "sku": "SW-004-2",
+    "label": "Red",
+    "price": 2299,
+    "quantity": 0
+   }
+  ]
+ },
+ {
+  "id": 5,
+  "name": "Laptop 15.6-inch",
+  "category": "Electronics",
+  "description": "Everyday laptop for work and study, with a fast SSD.",
+  "specs": {
+   "ram": "16 GB",
+   "storage": "512 GB SSD",
+   "warranty": "1 year"
+  },
+  "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef",
+  "variants": [
+   {
+    "id": 11,
+    "sku": "SW-005-1",
+    "label": "Silver",
+    "price": 52999,
+    "quantity": 6
+   },
+   {
+    "id": 12,
+    "sku": "SW-005-2",
+    "label": "Space Grey",
+    "price": 54999,
+    "quantity": 2
+   }
+  ]
+ },
+ {
+  "id": 6,
+  "name": "Power Bank 20000mAh",
+  "category": "Electronics",
+  "description": "Fast-charging power bank with two USB ports and USB-C.",
+  "specs": {
+   "capacity": "20000 mAh",
+   "output": "22.5 W"
+  },
+  "image": "https://images.unsplash.com/photo-1706275399494-fb26bbc5da63",
+  "variants": [
+   {
+    "id": 13,
+    "sku": "SW-006-1",
+    "label": "Black",
+    "price": 1799,
+    "quantity": 60
+   },
+   {
+    "id": 14,
+    "sku": "SW-006-2",
+    "label": "White",
+    "price": 1799,
+    "quantity": 34
+   }
+  ]
+ },
+ {
+  "id": 7,
+  "name": "Classic Cotton T-Shirt",
+  "category": "Fashion",
+  "description": "Soft everyday crew-neck tee in 100% combed cotton.",
+  "specs": {
+   "fabric": "100% cotton",
+   "fit": "Regular"
+  },
+  "image": "https://images.unsplash.com/photo-1651761179569-4ba2aa054997",
+  "variants": [
+   {
+    "id": 15,
+    "sku": "SW-007-1",
+    "label": "S",
+    "price": 599,
+    "quantity": 40
+   },
+   {
+    "id": 16,
+    "sku": "SW-007-2",
+    "label": "M",
+    "price": 599,
+    "quantity": 55
+   },
+   {
+    "id": 17,
+    "sku": "SW-007-3",
+    "label": "L",
+    "price": 599,
+    "quantity": 18
+   },
+   {
+    "id": 18,
+    "sku": "SW-007-4",
+    "label": "XL",
+    "price": 599,
+    "quantity": 0
+   }
+  ]
+ },
+ {
+  "id": 8,
+  "name": "Slim Fit Denim Jeans",
+  "category": "Fashion",
+  "description": "Stretch denim jeans with a comfortable mid-rise fit.",
+  "specs": {
+   "fabric": "Cotton stretch denim",
+   "fit": "Slim"
+  },
+  "image": "https://images.unsplash.com/photo-1714143136372-ddaf8b606da7",
+  "variants": [
+   {
+    "id": 19,
+    "sku": "SW-008-1",
+    "label": "30",
+    "price": 1799,
+    "quantity": 14
+   },
+   {
+    "id": 20,
+    "sku": "SW-008-2",
+    "label": "32",
+    "price": 1799,
+    "quantity": 20
+   },
+   {
+    "id": 21,
+    "sku": "SW-008-3",
+    "label": "34",
+    "price": 1799,
+    "quantity": 4
+   },
+   {
+    "id": 22,
+    "sku": "SW-008-4",
+    "label": "36",
+    "price": 1799,
+    "quantity": 0
+   }
+  ]
+ },
+ {
+  "id": 9,
+  "name": "Running Shoes",
+  "category": "Fashion",
+  "description": "Lightweight cushioned trainers for daily runs.",
+  "specs": {
+   "upper": "Breathable mesh",
+   "sole": "EVA foam"
+  },
+  "image": "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb",
+  "variants": [
+   {
+    "id": 23,
+    "sku": "SW-009-1",
+    "label": "UK 7",
+    "price": 2999,
+    "quantity": 10
+   },
+   {
+    "id": 24,
+    "sku": "SW-009-2",
+    "label": "UK 8",
+    "price": 2999,
+    "quantity": 15
+   },
+   {
+    "id": 25,
+    "sku": "SW-009-3",
+    "label": "UK 9",
+    "price": 2999,
+    "quantity": 6
+   },
+   {
+    "id": 26,
+    "sku": "SW-009-4",
+    "label": "UK 10",
+    "price": 2999,
+    "quantity": 0
+   }
+  ]
+ },
+ {
+  "id": 10,
+  "name": "Leather Wallet",
+  "category": "Fashion",
+  "description": "Slim genuine-leather wallet with card slots and coin pocket.",
+  "specs": {
+   "material": "Genuine leather"
+  },
+  "image": "https://images.unsplash.com/photo-1624538000860-24716b9050f2",
+  "variants": [
+   {
+    "id": 27,
+    "sku": "SW-010-1",
+    "label": "Brown",
+    "price": 899,
+    "quantity": 35
+   },
+   {
+    "id": 28,
+    "sku": "SW-010-2",
+    "label": "Black",
+    "price": 899,
+    "quantity": 22
+   }
+  ]
+ },
+ {
+  "id": 11,
+  "name": "Backpack 25L",
+  "category": "Fashion",
+  "description": "Water-resistant backpack with padded laptop compartment.",
+  "specs": {
+   "capacity": "25 litres"
+  },
+  "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62",
+  "variants": [
+   {
+    "id": 29,
+    "sku": "SW-011-1",
+    "label": "Navy",
+    "price": 1499,
+    "quantity": 28
+   },
+   {
+    "id": 30,
+    "sku": "SW-011-2",
+    "label": "Grey",
+    "price": 1499,
+    "quantity": 0
+   }
+  ]
+ },
+ {
+  "id": 12,
+  "name": "Non-Stick Cookware Set",
+  "category": "Home & Kitchen",
+  "description": "3-piece set: frying pan, kadhai and saucepan with lids.",
+  "specs": {
+   "material": "Aluminium, non-stick",
+   "induction": "Compatible"
+  },
+  "image": "https://images.unsplash.com/photo-1584990347193-6bebebfeaeee",
+  "variants": [
+   {
+    "id": 31,
+    "sku": "SW-012-1",
+    "label": "3-piece",
+    "price": 2499,
+    "quantity": 16
+   }
+  ]
+ },
+ {
+  "id": 13,
+  "name": "Electric Kettle 1.5L",
+  "category": "Home & Kitchen",
+  "description": "Stainless steel kettle with auto shut-off.",
+  "specs": {
+   "capacity": "1.5 L",
+   "power": "1500 W"
+  },
+  "image": "https://images.unsplash.com/photo-1685514128186-c5d8d7e90e1a",
+  "variants": [
+   {
+    "id": 32,
+    "sku": "SW-013-1",
+    "label": "Silver",
+    "price": 1099,
+    "quantity": 42
+   },
+   {
+    "id": 33,
+    "sku": "SW-013-2",
+    "label": "Black",
+    "price": 1099,
+    "quantity": 8
+   }
+  ]
+ },
+ {
+  "id": 14,
+  "name": "Cotton Bedsheet Set",
+  "category": "Home & Kitchen",
+  "description": "Double bedsheet with two pillow covers, 144 thread count.",
+  "specs": {
+   "fabric": "100% cotton"
+  },
+  "image": "https://images.unsplash.com/photo-1598535746036-87d13382f6a6",
+  "variants": [
+   {
+    "id": 34,
+    "sku": "SW-014-1",
+    "label": "Blue stripes",
+    "price": 1299,
+    "quantity": 20
+   },
+   {
+    "id": 35,
+    "sku": "SW-014-2",
+    "label": "Floral",
+    "price": 1399,
+    "quantity": 0
+   }
+  ]
+ },
+ {
+  "id": 15,
+  "name": "LED Desk Lamp",
+  "category": "Home & Kitchen",
+  "description": "Dimmable desk lamp with three colour modes and USB charging.",
+  "specs": {
+   "power": "10 W"
+  },
+  "image": "https://images.unsplash.com/photo-1570974802254-4b0ad1a755f5",
+  "variants": [
+   {
+    "id": 36,
+    "sku": "SW-015-1",
+    "label": "White",
+    "price": 999,
+    "quantity": 3
+   },
+   {
+    "id": 37,
+    "sku": "SW-015-2",
+    "label": "Black",
+    "price": 999,
+    "quantity": 26
+   }
+  ]
+ },
+ {
+  "id": 16,
+  "name": "Vitamin C Face Serum",
+  "category": "Beauty",
+  "description": "Brightening daily serum with 10% Vitamin C.",
+  "specs": {
+   "size": "30 ml"
+  },
+  "image": "https://images.unsplash.com/photo-1764694187667-f28a05a52c0e",
+  "variants": [
+   {
+    "id": 38,
+    "sku": "SW-016-1",
+    "label": "30 ml",
+    "price": 599,
+    "quantity": 44
+   },
+   {
+    "id": 39,
+    "sku": "SW-016-2",
+    "label": "50 ml",
+    "price": 849,
+    "quantity": 17
+   }
+  ]
+ },
+ {
+  "id": 17,
+  "name": "Sunscreen SPF 50",
+  "category": "Beauty",
+  "description": "Lightweight, non-greasy broad-spectrum sunscreen.",
+  "specs": {
+   "spf": "50 PA+++"
+  },
+  "image": "https://images.unsplash.com/photo-1623676714504-edd78728155e",
+  "variants": [
+   {
+    "id": 40,
+    "sku": "SW-017-1",
+    "label": "50 g",
+    "price": 449,
+    "quantity": 70
+   },
+   {
+    "id": 41,
+    "sku": "SW-017-2",
+    "label": "100 g",
+    "price": 749,
+    "quantity": 0
+   }
+  ]
+ },
+ {
+  "id": 18,
+  "name": "Hair Dryer 2000W",
+  "category": "Beauty",
+  "description": "Fast-drying hair dryer with cool-shot and two speeds.",
+  "specs": {
+   "power": "2000 W"
+  },
+  "image": "https://images.unsplash.com/photo-1727364438136-6edc10ef0a52",
+  "variants": [
+   {
+    "id": 42,
+    "sku": "SW-018-1",
+    "label": "Black",
+    "price": 1299,
+    "quantity": 12
+   }
+  ]
+ },
+ {
+  "id": 19,
+  "name": "Yoga Mat 6mm",
+  "category": "Sports & Fitness",
+  "description": "Non-slip, extra-cushioned exercise mat with carry strap.",
+  "specs": {
+   "thickness": "6 mm"
+  },
+  "image": "https://images.unsplash.com/photo-1763004871583-4183d64096b1",
+  "variants": [
+   {
+    "id": 43,
+    "sku": "SW-019-1",
+    "label": "Purple",
+    "price": 699,
+    "quantity": 38
+   },
+   {
+    "id": 44,
+    "sku": "SW-019-2",
+    "label": "Teal",
+    "price": 699,
+    "quantity": 21
+   },
+   {
+    "id": 45,
+    "sku": "SW-019-3",
+    "label": "Black",
+    "price": 699,
+    "quantity": 0
+   }
+  ]
+ },
+ {
+  "id": 20,
+  "name": "Adjustable Dumbbell Set",
+  "category": "Sports & Fitness",
+  "description": "Pair of adjustable dumbbells, 2 to 10 kg each.",
+  "specs": {
+   "weight": "2-10 kg each"
+  },
+  "image": "https://images.unsplash.com/photo-1638536532686-d610adfc8e5c",
+  "variants": [
+   {
+    "id": 46,
+    "sku": "SW-020-1",
+    "label": "10 kg pair",
+    "price": 3499,
+    "quantity": 7
+   },
+   {
+    "id": 47,
+    "sku": "SW-020-2",
+    "label": "20 kg pair",
+    "price": 5999,
+    "quantity": 2
+   }
+  ]
+ },
+ {
+  "id": 21,
+  "name": "Insulated Steel Water Bottle",
+  "category": "Sports & Fitness",
+  "description": "Keeps drinks cold for 24 hours and hot for 12.",
+  "specs": {
+   "material": "Stainless steel"
+  },
+  "image": "https://images.unsplash.com/photo-1544003484-3cd181d17917",
+  "variants": [
+   {
+    "id": 48,
+    "sku": "SW-021-1",
+    "label": "500 ml",
+    "price": 799,
+    "quantity": 50
+   },
+   {
+    "id": 49,
+    "sku": "SW-021-2",
+    "label": "1 L",
+    "price": 1099,
+    "quantity": 19
+   }
+  ]
+ },
+ {
+  "id": 22,
+  "name": "Productivity Habits (Paperback)",
+  "category": "Books",
+  "description": "Practical guide to building routines that stick.",
+  "specs": {
+   "format": "Paperback",
+   "pages": "288"
+  },
+  "image": "https://images.unsplash.com/photo-1519764340700-3db40311f21e",
+  "variants": [
+   {
+    "id": 50,
+    "sku": "SW-022-1",
+    "label": "Paperback",
+    "price": 399,
+    "quantity": 45
+   },
+   {
+    "id": 51,
+    "sku": "SW-022-2",
+    "label": "Hardcover",
+    "price": 699,
+    "quantity": 6
+   }
+  ]
+ },
+ {
+  "id": 23,
+  "name": "Beginner Cookbook",
+  "category": "Books",
+  "description": "100 easy recipes with photos for first-time cooks.",
+  "specs": {
+   "format": "Paperback",
+   "pages": "240"
+  },
+  "image": "https://images.unsplash.com/photo-1542010589005-d1eacc3918f2",
+  "variants": [
+   {
+    "id": 52,
+    "sku": "SW-023-1",
+    "label": "Paperback",
+    "price": 499,
+    "quantity": 0
+   }
+  ]
+ },
+ {
+  "id": 24,
+  "name": "Building Blocks Set 500 pcs",
+  "category": "Toys & Games",
+  "description": "Colourful creative building set for ages 6 and up.",
+  "specs": {
+   "pieces": "500",
+   "age": "6+"
+  },
+  "image": "https://images.unsplash.com/photo-1638802538115-041e14d28d6a",
+  "variants": [
+   {
+    "id": 53,
+    "sku": "SW-024-1",
+    "label": "500 pcs",
+    "price": 1299,
+    "quantity": 18
+   }
+  ]
+ },
+ {
+  "id": 25,
+  "name": "Strategy Board Game",
+  "category": "Toys & Games",
+  "description": "Family board game for 2 to 6 players, 45 minutes.",
+  "specs": {
+   "players": "2-6",
+   "age": "8+"
+  },
+  "image": "https://images.unsplash.com/photo-1629760946220-5693ee4c46ac",
+  "variants": [
+   {
+    "id": 54,
+    "sku": "SW-025-1",
+    "label": "Standard",
+    "price": 1499,
+    "quantity": 9
+   }
+  ]
+ },
+ {
+  "id": 26,
+  "name": "Organic Green Tea",
+  "category": "Grocery",
+  "description": "Pack of 100 tea bags, naturally caffeinated.",
+  "specs": {
+   "pack": "100 bags"
+  },
+  "image": "https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5",
+  "variants": [
+   {
+    "id": 55,
+    "sku": "SW-026-1",
+    "label": "100 bags",
+    "price": 349,
+    "quantity": 80
+   },
+   {
+    "id": 56,
+    "sku": "SW-026-2",
+    "label": "200 bags",
+    "price": 649,
+    "quantity": 0
+   }
+  ]
+ },
+ {
+  "id": 27,
+  "name": "Roasted Almonds",
+  "category": "Grocery",
+  "description": "Lightly salted roasted almonds, resealable pouch.",
+  "specs": {
+   "type": "Roasted, salted"
+  },
+  "image": "https://images.unsplash.com/photo-1608797178974-15b35a64ede9",
+  "variants": [
+   {
+    "id": 57,
+    "sku": "SW-027-1",
+    "label": "250 g",
+    "price": 299,
+    "quantity": 60
+   },
+   {
+    "id": 58,
+    "sku": "SW-027-2",
+    "label": "500 g",
+    "price": 549,
+    "quantity": 4
+   }
+  ]
+ }
+]
