@@ -25,9 +25,12 @@ to navigator.modelContext, and add window.storefrontTools for console testing.
 No other tools yet. Run the build and tell me how to test.
 ```
 
+**Prompt to open localhost in ChatGPT
+> Open http://localhost:5173/ in chatgpt in-app browser Session 
+
 **Try it in ChatGPT:**
 
-> Find wireless headphones under ₹9,000 and show me the details of the best one that's in stock.
+> Find wireless headphones under ₹9,000 and show me the details of the best one that's in stock - use WebMCP tools for this.
 
 ## Stage 2: Decide
 
@@ -47,7 +50,7 @@ No checkout yet.
 
 **Try it in ChatGPT:**
 
-> Save the blue ones to my wishlist, add 2 to my cart, then make it 3. Is the black one available?
+> Save the blue ones to my wishlist, add 2 to my cart, then make it 3. Is the black one available? - use WebMCP tools for this
 
 ## Stage 3: Buy
 
@@ -65,7 +68,7 @@ Add both to window.storefrontTools. No payment or email.
 
 **Try it in ChatGPT:**
 
-> Buy what's in my cart. Ask me for my delivery details first. Then show my order.
+> Buy what's in my cart. Ask me for my delivery details first. Then show my order. - use WebMCP tools for this
 
 ## Stuck? Try these in order
 

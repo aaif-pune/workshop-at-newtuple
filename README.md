@@ -61,3 +61,6 @@ restore the seed data.
 
 - Data lives per browser profile and per origin. Open the same `localhost` URL in two browsers and they are separate shops.
 - Data is not shared between different ports or browsers.
+
+## Deployed Link
+https://workshop-at-newtuple.vercel.app/

@@ -1,0 +1,21 @@
+Setup before the workshop 
+
+1. Laptop
+Windows 10/11, macOS, or Linux, with at least 8 GB RAM
+
+
+2. Software to install
+Node.js 22.12 or newer: https://nodejs.org/en/download
+Git: https://git-scm.com/downloads
+Code editor (VS Code or similar, optional): https://code.visualstudio.com
+ngrok (a free account is enough): https://ngrok.com/download. Create the account at https://dashboard.ngrok.com/signup.
+
+3. Browser
+Chrome, recent version (149 or newer recommended): https://www.google.com/chrome
+Open chrome://flags, search for WebMCP, set it to Enabled, and relaunch. (optional)
+
+4. Accounts and apps
+
+GitHub account to access the workshop repo.
+ChatGPT desktop app (Windows or macOS), updated to the latest version: https://openai.com/chatgpt/download
+A coding agent, installed and logged in, such as Claude Code (https://claude.com/product/claude-code) or Cursor (https://cursor.com)
