@@ -2,6 +2,7 @@
 // Based on the official MCP Apps flow: initialize, tool-result notifications, tools/call.
 export function createBridge(onResult, onStatus, targetWindow = window) {
   let nextId = 0, connected = false, disposed = false
+  // JSON-RPC replies arrive asynchronously, so track the promise for each ID.
   const pending = new Map()
   const send = message => targetWindow.parent.postMessage({ jsonrpc: '2.0', ...message }, '*')
   const request = (method, params) => new Promise((resolve, reject) => {
@@ -11,6 +12,7 @@ export function createBridge(onResult, onStatus, targetWindow = window) {
     send({ id, method, params })
   })
   const receive = event => {
+    // Accept protocol messages only from the host embedding this iframe.
     if (event.source !== targetWindow.parent) return
     const message = event.data
     if (message?.jsonrpc !== '2.0') return
@@ -19,6 +21,7 @@ export function createBridge(onResult, onStatus, targetWindow = window) {
       clearTimeout(entry.timer); pending.delete(message.id)
       message.error ? entry.reject(new Error(message.error.message || 'Host request failed')) : entry.resolve(message.result)
     } else if (message.method === 'ui/notifications/tool-result') {
+      // The assistant's first tool call arrives here without a widget click.
       onResult(message.params)
     } else if (message.method === 'ui/notifications/tool-cancelled') {
       onStatus('The request was cancelled. Try again.')
@@ -31,6 +34,7 @@ export function createBridge(onResult, onStatus, targetWindow = window) {
     async connect() {
       if (targetWindow.parent === targetWindow) { onStatus('Open this store from an MCP host, or use the local preview.'); return }
       try {
+        // The widget must finish this handshake before its buttons call tools.
         await request('ui/initialize', { appInfo: { name: 'shopwave', version: '1.0.0' }, appCapabilities: {}, protocolVersion: '2026-01-26' })
         if (disposed) return
         connected = true
@@ -42,6 +46,8 @@ export function createBridge(onResult, onStatus, targetWindow = window) {
       if (!connected) throw new Error('The app is not connected yet. Please retry in a moment.')
       let result
       try {
+        // The host forwards tools/call to our MCP server. The widget does not
+        // fetch the /mcp HTTP endpoint directly.
         result = await request('tools/call', { name, arguments: args })
       } catch (error) {
         if (/unknown tool|tool[^\n]*not found/i.test(error.message)) {

@@ -249,6 +249,7 @@ export const toolDefinitions = {
 }
 
 export const webToolDefinitions = Object.entries(toolDefinitions)
+  // WebMCP consumes browser-side JSON Schema; MCP-only tools stay out.
   .filter(([, definition]) => definition.web)
   .map(([name, definition]) => ({ name, ...definition.web }))
 
@@ -256,6 +257,8 @@ export const webToolDefinitions = Object.entries(toolDefinitions)
 const mcpToolOrder = ["search_products","get_product","check_availability","get_cart","add_to_cart","set_cart_quantity","remove_from_cart","get_wishlist","add_to_wishlist","remove_from_wishlist","show_checkout","place_order","get_orders"]
 
 export function createMcpToolDefinitions(z) {
+  // Reuse tool names and descriptions, but construct Zod input schemas for
+  // validation when this server registers its remote MCP tools.
   const id = z.number().int().positive()
   const quantity = z.number().int().min(1).max(1000)
   const customer = z.object({

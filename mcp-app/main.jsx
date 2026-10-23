@@ -25,6 +25,8 @@ function App() {
   const bridge = useRef(null)
   const busyRef = useRef(false)
   useEffect(() => {
+    // The same callback handles the assistant's first tool result and results
+    // from later widget clicks. `view` decides which screen to render.
     const client = createBridge(result => {
       if (result?.isError) { setError(result.content?.find(x => x.type === 'text')?.text || 'Request failed'); return }
       const next = result?.structuredContent
@@ -36,11 +38,13 @@ function App() {
     }, setConnection)
     bridge.current = client
     void client.connect()
+    // Tell the embedding host when content height changes, so the iframe fits.
     const observer = new ResizeObserver(() => client.resize(document.documentElement.scrollHeight))
     observer.observe(document.body)
     return () => { observer.disconnect(); client.dispose() }
   }, [])
   const run = async (name, args = {}) => {
+    // Block duplicate clicks during a tool call and show failures in the UI.
     if (busyRef.current) return
     busyRef.current = true; setBusy(true); setError('')
     try { return await bridge.current.callTool(name, args) }
@@ -50,6 +54,7 @@ function App() {
   const search = event => {
     event?.preventDefault()
     const args = Object.fromEntries(Object.entries(filters).filter(([, value]) => value !== ''))
+    // HTML number inputs produce strings; the MCP schema requires numbers.
     for (const key of ['min_price', 'max_price']) if (args[key] !== undefined) args[key] = Number(args[key])
     if (args.min_price != null && args.max_price != null && args.min_price > args.max_price) { setError('Minimum price must not exceed maximum price.'); return }
     run('search_products', args)

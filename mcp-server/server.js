@@ -8,16 +8,21 @@ import { toolResult } from './actions.js'
 export const RESOURCE_URI = 'ui://shopwave/store.html'
 export function createMcpServer(actions, html = readFileSync(new URL('../dist/mcp-app/index.html', import.meta.url), 'utf8')) {
   const server = new McpServer({ name: 'shopwave-demo', version: '1.0.0' })
+  // MCP Apps pairs server tools with an HTML resource. The host loads this
+  // self-contained widget when it sees the resource URI on a tool below.
   registerAppResource(server, 'shopwave-store', RESOURCE_URI, {}, async () => ({
     contents: [{
       uri: RESOURCE_URI, mimeType: RESOURCE_MIME_TYPE, text: html,
       _meta: { ui: { prefersBorder: true, csp: { resourceDomains: ['https://images.unsplash.com'] } } },
     }],
   }))
+  // The shared catalog defines the tool contracts, but this server must
+  // register them so remote MCP hosts can discover and call them.
   for (const { name, title, description, inputSchema, readOnly } of createMcpToolDefinitions(z)) {
     registerAppTool(server, name, {
       title, description, inputSchema,
       annotations: { readOnlyHint: readOnly, destructiveHint: name === 'place_order', openWorldHint: false },
+      // The UI link makes the tool result eligible for the embedded widget.
       _meta: { ui: { resourceUri: RESOURCE_URI } },
     }, async args => toolResult(actions, name, args))
   }

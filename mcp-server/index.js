@@ -6,9 +6,12 @@ import { createActions } from './actions.js'
 
 const port = Number(process.env.MCP_PORT || 3001)
 const host = process.env.MCP_HOST || '127.0.0.1'
+// Build the React widget into one HTML file before starting this process.
+// The MCP host requests it through the UI resource registered in server.js.
 const html = readFileSync(new URL('../dist/mcp-app/index.html', import.meta.url), 'utf8')
+// Keep one set of actions for the process so ChatGPT and Claude see the same
+// sample cart and orders, even though their MCP requests are separate.
 const actions = createActions()
-// Stateless MCP transport; the demo shop itself persists in memory until restart/reset.
 const http = createServer(async (req, res) => {
   const pathname = new URL(req.url, 'http://localhost').pathname
   if (pathname === '/health' && req.method === 'GET') {
@@ -19,8 +22,11 @@ const http = createServer(async (req, res) => {
   if (req.method !== 'POST') { res.writeHead(405, { Allow: 'POST' }); return res.end('Stateless MCP accepts POST requests.') }
   // Remote MCP hosts connect server-to-server. Do not allow arbitrary browser origins.
   if (req.headers.origin) { res.writeHead(403); return res.end('Browser-origin requests are not supported; use an MCP host.') }
+  // MCP transport is stateless: make a protocol connection for each POST.
+  // Its tool callbacks still use the shared actions created above.
   const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true })
   const server = createMcpServer(actions, html)
+  // Close request-scoped protocol objects when this response closes.
   res.on('close', () => { void transport.close(); void server.close() })
   try {
     await server.connect(transport)
