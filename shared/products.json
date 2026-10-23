@@ -746,5 +746,66 @@
     "quantity": 4
    }
   ]
+ },
+ {
+  "id": 28,
+  "name": "Pulse 2 Smartwatch with AMOLED Display",
+  "category": "Electronics",
+  "description": "1.43-inch AMOLED smartwatch with heart-rate, SpO2 and sleep tracking, built-in GPS and a 10-day battery. Water resistant to 5 ATM.",
+  "specs": {
+   "display": "1.43\" AMOLED",
+   "battery": "Up to 10 days",
+   "sensors": "Heart rate, SpO2, accelerometer",
+   "gps": "Built-in",
+   "water_resistance": "5 ATM",
+   "connectivity": "Bluetooth 5.3",
+   "compatibility": "Android 8+ and iOS 14+",
+   "warranty": "1 year"
+  },
+  "image": "https://images.unsplash.com/photo-1624096104992-9b4fa3a279dd",
+  "variants": [
+   {
+    "id": 59,
+    "sku": "SW-028-1",
+    "label": "Black strap",
+    "price": 4999,
+    "quantity": 20
+   },
+   {
+    "id": 60,
+    "sku": "SW-028-2",
+    "label": "Blue strap",
+    "price": 4999,
+    "quantity": 6
+   }
+  ]
+ },
+ {
+  "id": 29,
+  "name": "Smart Watch Pro Max Ultra",
+  "category": "Electronics",
+  "description": "Best smart watch ever! Amazing display, super long battery, tracks everything. Perfect gift. 100% waterproof.",
+  "specs": {
+   "battery": "Long lasting",
+   "display": "HD",
+   "features": "All features"
+  },
+  "image": "https://images.unsplash.com/photo-1624096104992-9b4fa3a279dd",
+  "variants": [
+   {
+    "id": 61,
+    "sku": "SW-029-1",
+    "label": "Black strap",
+    "price": 4999,
+    "quantity": 20
+   },
+   {
+    "id": 62,
+    "sku": "SW-029-2",
+    "label": "Blue strap",
+    "price": 4999,
+    "quantity": 6
+   }
+  ]
  }
 ]
