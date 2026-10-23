@@ -1,12 +1,14 @@
-// WebMCP browser registration. Tool contracts and commerce handlers are shared.
-import { store } from './api'
-import { showInUI } from './ui-bus'
-import { createWebTools } from './webmcp-tools.js'
+// WebMCP add-on: registers the shared agent tools with the browser (document.modelContext)
+// so an in-browser agent (ChatGPT) can call them, and shows a status pill.
+// The shop never imports this; remove the folder and its import in src/main.jsx to drop it.
+import { useEffect, useState } from 'react'
+import { createRoot } from 'react-dom/client'
+import { api } from '../../src/api'
+import { showInUI } from '../../src/ui-bus'
+import { createTools, ok, fail } from '../tools'
+import './webmcp.css'
 
-const ok = (data) => ({ content: [{ type: 'text', text: JSON.stringify(data) }] })
-const fail = (e) => ({ content: [{ type: 'text', text: JSON.stringify({ error: e.message }) }], isError: true })
-
-export const tools = createWebTools(store, showInUI)
+const tools = createTools(api, showInUI)
 
 const getCtx = () => {
   // Current spec: document.modelContext. Older drafts / early Chrome: navigator.modelContext.
@@ -50,7 +52,7 @@ async function register(found) {
 
 // Starts WebMCP. The agent browser may inject modelContext a moment after page load,
 // so keep looking for ~15 s. onStatus fires whenever the status changes.
-export function startWebMCP(onStatus) {
+function startWebMCP(onStatus) {
   // Handy in DevTools even when the browser has no WebMCP:
   window.storefrontTools = Object.fromEntries(tools.map((t) => [t.name, (args = {}) => t.run(args).then(ok, fail)]))
   let stopped = false, tries = 0
@@ -79,3 +81,15 @@ export function startWebMCP(onStatus) {
   })
   return () => { stopped = true; clearInterval(timer) }
 }
+
+function Status() {
+  const [mcp, setMcp] = useState({ supported: false, count: 0, where: '', error: '' })
+  useEffect(() => startWebMCP(setMcp), [])
+  const title = mcp.supported
+    ? `via ${mcp.where}\n` + tools.map((x) => x.name).join('\n')
+    : (mcp.error || 'document.modelContext not found in this browser') + '\nTest tools in DevTools: await storefrontTools.search_products({query:"headphones"})'
+  return <span className={'webmcp-pill ' + (mcp.supported ? 'good' : 'warn')} title={title}>WebMCP: {mcp.supported ? `${mcp.count} tools live` : 'not detected'}</span>
+}
+
+const el = document.body.appendChild(document.createElement('div'))
+createRoot(el).render(<Status />)

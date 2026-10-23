@@ -28,7 +28,7 @@ export const themeFor = (category) => THEMES[category] || DEFAULT_THEME
 //   string = that category ('' for the default look)   null = this page does not decide, keep the current look
 export function inferCategory({ page, product, filters, results }) {
   if (page === 'product') return product ? product.category : null
-  if (page === 'widgets') return ''
+  if (page === 'admin' || page === 'widgets') return ''
   if (page !== 'home') return null
   if (filters.category) return filters.category
   if (filters.query && results.length) {

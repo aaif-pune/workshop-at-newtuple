@@ -7,4 +7,5 @@ import '@fontsource/poppins/700.css'
 import '@fontsource/poppins/800.css'
 import './widgets/widgets.css'
 import './style.css'
+import '../agent/webmcp' // optional add-on: delete this line (and agent/) for a plain shop
 createRoot(document.getElementById('root')).render(<App />)

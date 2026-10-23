@@ -1,4 +1,4 @@
-// One-off generator for shared/products.json. Run: node scripts/gen-seed.mjs
+// One-off generator for src/data/products.json. Run: node scripts/gen-seed.mjs
 import { writeFileSync } from 'node:fs'
 // [name, category, description, specs, [[label, price INR, qty], ...]]
 const P = [
@@ -39,5 +39,5 @@ const out = P.map(([name, category, description, specs, vars], i) => ({
     id: vid++, sku: `SW-${String(i + 1).padStart(3, '0')}-${j + 1}`, label, price, quantity,
   })),
 }))
-writeFileSync(new URL('../shared/products.json', import.meta.url), JSON.stringify(out, null, 1) + '\n')
+writeFileSync(new URL('../src/data/products.json', import.meta.url), JSON.stringify(out, null, 1) + '\n')
 console.log(out.length, 'products', vid - 1, 'variants')

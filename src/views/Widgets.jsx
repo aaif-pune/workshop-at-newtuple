@@ -58,7 +58,7 @@ export default function Widgets() {
         </div>
       </Block>
 
-      <Block title="DataTable + Stat" note="A table with summary stats. Here it lists team tasks."
+      <Block title="DataTable + Stat" note="The inventory screen is this. Here it lists team tasks."
         code={`<DataTable rows={tasks} columns={[\n  { key: 'task', header: 'Task' },\n  { key: 'status', header: 'Status', render: (t) => <Badge tone="good">{t.status}</Badge> },\n]} />`}>
         <StatRow>
           <Stat label="Tasks" value={TASKS.length} />
@@ -96,7 +96,7 @@ export default function Widgets() {
         </div>
       </Block>
 
-      <Block title="NotificationList" note="A list of updates. Here, release notes."
+      <Block title="NotificationList" note="The bell menu. Here, release updates."
         code={`<NotificationList items={[{ id, title, message, time, read, icon }]} onOpen={...} />`}>
         <div className="gal-notifs"><NotificationList items={[
           { id: 1, title: 'Build passed', message: 'main is green, ready for the dry run.', time: '2 min ago', icon: <Bell size={18} /> },

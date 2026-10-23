@@ -1,6 +1,6 @@
 // The storefront "API". Same shape as a REST client (async, JSON in, JSON out),
 // but the data lives in a JSON document in localStorage, so there is no server.
-// The React UI and the WebMCP tools both go through this one file.
+// The React UI (and any add-on, e.g. agent/) goes through this one file.
 import { createStore } from './services/store'
 
 const memory = new Map()
@@ -25,10 +25,17 @@ export const api = {
   searchProducts: wrap(store.search),
   getProduct: wrap(store.getProduct),
   getVariant: wrap(store.getVariant),
-  setMetadata: wrap(store.setMetadata),
   getWishlist: wrap(store.getWishlist),
   addToWishlist: wrap(store.addToWishlist),
   removeFromWishlist: wrap(store.removeFromWishlist),
+  notifyWhenAvailable: wrap(store.notifyWhenAvailable),
+  getNotifications: wrap(store.getNotifications),
+  getInventory: wrap(store.getInventory),
+  restock: wrap(store.restock),
+  addProduct: wrap(store.addProduct),
+  getInbox: wrap(store.getInbox),
+  markRead: wrap(store.markRead),
+  clearInbox: wrap(store.clearInbox),
   getCart: wrap(store.getCart),
   addToCart: wrap(store.addToCart),
   setCartQuantity: wrap(store.setCartQuantity),
@@ -36,4 +43,9 @@ export const api = {
   placeOrder: wrap(store.placeOrder),
   getOrders: wrap(store.getOrders),
   reset: wrap(store.reset),
+  // Session 4: AEO
+  auditAeo: wrap(store.auditAeo),
+  previewAeoUpdate: wrap(store.previewAeoUpdate),
+  setAeoMetadata: wrap(store.setAeoMetadata),
+  getAiView: wrap(store.getAiView),
 }

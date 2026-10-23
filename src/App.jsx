@@ -1,33 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Heart, Package, Search, ShoppingCart } from 'lucide-react'
 import { api } from './api'
 import { useApi } from './hooks'
 import { navigate, useRoute } from './router'
 import { onUIRequest } from './ui-bus'
-import { startWebMCP, tools } from './webmcp'
 import { DEFAULT_THEME, inferCategory, themeFor } from './themes'
+import { Bell_, Popups } from './Notifications'
 import Home, { DEFAULT_FILTERS } from './views/Home'
 import ProductPage from './views/ProductPage'
 import Wishlist from './views/Wishlist'
 import Cart from './views/Cart'
 import Checkout from './views/Checkout'
 import Orders from './views/Orders'
+import Inventory from './views/Inventory'
 import Widgets from './views/Widgets'
 
-const VIEW_PATH = { shop: '/', cart: '/cart', wishlist: '/wishlist', orders: '/orders', checkout: '/checkout' }
+const VIEW_PATH = { shop: '/', cart: '/cart', wishlist: '/wishlist', orders: '/orders', inventory: '/admin', checkout: '/checkout' }
 
 export default function App() {
   const route = useRoute()
   const [filters, setFilters] = useState(DEFAULT_FILTERS)
   const [search, setSearch] = useState('')
   const [toast, setToast] = useState(null)
+  const [inboxOpen, setInboxOpen] = useState(false)
+  const [popups, setPopups] = useState([])
   const [themeCat, setThemeCat] = useState('')
-  const [mcp, setMcp] = useState({ supported: false, count: 0, where: '', error: '' })
-  useEffect(() => startWebMCP(setMcp), [])
-
   useEffect(() => onUIRequest((d) => {
     if (d.filters) { setFilters({ ...DEFAULT_FILTERS, ...d.filters }); setSearch(d.filters.query || '') }
-    if (d.view === 'product') navigate('/product/' + d.productId)
+    if (d.panel === 'inbox') setInboxOpen(true)
+    if (d.view === 'product') navigate('/product/' + d.productId + (d.aiView ? '?view=ai' : ''))
     else if (d.view === 'orders' && d.placed) navigate('/orders?placed=' + d.placed)
     else if (d.view) navigate(VIEW_PATH[d.view] || '/')
   }), [])
@@ -35,6 +36,7 @@ export default function App() {
   const categories = useApi(api.categories, [], [])
   const wishlist = useApi(api.getWishlist, [], [])
   const cart = useApi(api.getCart, [], { item_count: 0 })
+  const inbox = useApi(api.getInbox, [], [])
   const results = useApi(() => api.searchProducts(filters), [JSON.stringify(filters)], [])
   const product = useApi(() => (route.page === 'product' ? api.getProduct(route.id).catch(() => null) : Promise.resolve(null)), [route.page, route.id], null)
 
@@ -43,6 +45,18 @@ export default function App() {
   useEffect(() => { if (inferred !== null) setThemeCat(inferred) }, [inferred])
   const theme = themeFor(themeCat)
   useEffect(() => { document.documentElement.dataset.theme = theme.key }, [theme.key])
+
+  // Pop a card when a new in-app notification arrives (not for ones already there at load).
+  const seen = useRef(null)
+  useEffect(() => {
+    if (seen.current === null) { seen.current = new Set(inbox.map((n) => n.id)); return }
+    const fresh = inbox.filter((n) => !seen.current.has(n.id))
+    if (!fresh.length) return
+    fresh.forEach((n) => seen.current.add(n.id))
+    setPopups((p) => [...fresh, ...p].slice(0, 3))
+    fresh.forEach((n) => setTimeout(() => setPopups((p) => p.filter((x) => x.id !== n.id)), 8000))
+  }, [inbox])
+  const dismissPopup = (id) => setPopups((p) => p.filter((x) => x.id !== id))
 
   const flash = (msg, action) => { if (!msg) return; setToast({ msg, action }); clearTimeout(flash.t); flash.t = setTimeout(() => setToast(null), 3500) }
   const run = async (fn, okMsg) => {
@@ -70,6 +84,7 @@ export default function App() {
           <button type="submit" aria-label="Search"><Search size={18} /></button>
         </form>
         <nav className="icons" aria-label="Account">
+          <Bell_ items={inbox} open={inboxOpen} setOpen={setInboxOpen} />
           <a href="#/orders"><Package size={19} /><span>Orders</span></a>
           <a href="#/wishlist"><Heart size={19} /><span>Wishlist</span>{wishlist.length > 0 && <b>{wishlist.length}</b>}</a>
           <a href="#/cart"><ShoppingCart size={19} /><span>Cart</span>{cart.item_count > 0 && <b>{cart.item_count}</b>}</a>
@@ -80,31 +95,30 @@ export default function App() {
         {categories.map((c) => <button key={c} className={themeCat === c ? 'on' : ''} onClick={() => pickCategory(c)}>{c}</button>)}
       </nav>
 
-      <main>
+      <main onClick={() => inboxOpen && setInboxOpen(false)}>
         {route.page === 'home' && <Home {...ctx} />}
-        {route.page === 'product' && <ProductPage id={route.id} run={run} setFilters={setFilters} />}
+        {route.page === 'product' && <ProductPage id={route.id} run={run} setFilters={setFilters} aiView={route.params.get('view') === 'ai'} />}
         {route.page === 'wishlist' && <Wishlist run={run} />}
         {route.page === 'cart' && <Cart run={run} />}
         {route.page === 'checkout' && <Checkout />}
         {route.page === 'orders' && <Orders placed={route.params.get('placed')} />}
+        {route.page === 'admin' && <Inventory run={run} />}
         {route.page === 'widgets' && <Widgets />}
       </main>
 
-      {!mcp.supported && <p className="hint">WebMCP is not available in this browser. Test tools in DevTools: <code>await storefrontTools.search_products({'{query:"headphones"}'})</code></p>}
       <footer className="foot">
         <div>
           <strong>ShopWave</strong>
-          <span>A demo store for the agentic commerce workshop. No real orders or payments. Photos from Unsplash.</span>
+          <span>A demo store. No real orders or payments. Photos from Unsplash.</span>
         </div>
         <div className="footlinks">
+          <a href="#/admin">Inventory manager</a>
           <a href="#/widgets">Component library</a>
           <button onClick={() => confirm('Reset all demo data?') && run(api.reset, 'Demo data reset')}>Reset demo data</button>
-          <span className={'pill ' + (mcp.supported ? 'good' : 'warn')} title={mcp.supported ? `via ${mcp.where}\n` + tools.map((x) => x.name).join('\n') : mcp.error || 'document.modelContext not found in this browser'}>
-            WebMCP: {mcp.supported ? `${mcp.count} tools live` : 'not detected'}
-          </span>
         </div>
       </footer>
 
+      {!inboxOpen && <Popups items={popups} dismiss={dismissPopup} />}
       {toast && <div className="toast" role="alert">{toast.msg}{toast.action && <a href={'#' + toast.action.to}>{toast.action.label}</a>}</div>}
     </>
   )
