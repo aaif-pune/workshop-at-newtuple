@@ -62,7 +62,7 @@ export function createStore(storage) {
       id: product.id, name: product.name, category: product.category,
       description: product.description, specs: product.specs, image: product.image || null,
       images: product.images?.length ? product.images : product.image ? [product.image] : [],
-      variants,
+      variants,faq: product.faq ?? [],
       price_from: Math.min(...variants.map((v) => v.price)),
       total_quantity: variants.reduce((s, v) => s + v.quantity, 0),
       status: variants.some((v) => v.status === 'in_stock') ? 'in_stock'
@@ -77,7 +77,8 @@ export function createStore(storage) {
     const state = load()
     const tokens = String(query).toLowerCase().split(/\s+/).filter(Boolean)
     let list = state.products.map((p) => productView(state, p)).filter((p) => {
-      const hay = `${p.name} ${p.category} ${p.description} ${p.variants.map((v) => v.label + ' ' + v.sku).join(' ')}`.toLowerCase()
+      const hay = `${p.name} ${p.category} ${p.description} ${Object.entries(p.specs ?? {}).flat().join(' ')} ${p.faq.map((f) => f.question + ' ' + f.answer).join(' ')} ${p.variants.map((v) => v.label + ' ' + v.sku).join(' ')}`.toLowerCase()
+      // const hay = `${p.name} ${p.category} ${p.description} ${p.variants.map((v) => v.label + ' ' + v.sku).join(' ')}`.toLowerCase()
       if (!tokens.every((t) => hay.includes(t))) return false
       if (category && p.category.toLowerCase() !== String(category).toLowerCase()) return false
       if (status && !p.variants.some((v) => v.status === status)) return false
