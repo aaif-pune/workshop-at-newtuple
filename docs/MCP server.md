@@ -1,186 +1,419 @@
 # MCP server and MCP App prompts
 
-Paste these prompts into your coding agent **one at a time**, in the same chat and repository. Let it finish each stage and check the result before pasting the next. These prompts continue the [WebMCP exercise](webmcp_prompt.md): start with your working WebMCP storefront or the completed `webmcp` checkpoint. Keep the website working. If you switch branches, keep this page open; this guide is stored on `main`.
+Three prompts, one per stage. Paste them into your coding agent (Claude, ChatGPT, or any open-source agent) one at a time, in the same chat and repository. Validate each stage before you move to the next.
 
-The goal is the structure and behavior of the finished `mcp-server` branch. Agents may format the code differently. Do not switch to that branch or copy its files while doing the exercise.
+These prompts continue the [WebMCP exercise](webmcp_prompt.md). Start from your working WebMCP storefront or the completed `webmcp` checkpoint, and keep the website working. The end goal is the finished `mcp-server` branch. Don't switch to it or copy its files during the exercise.
 
-| Stage | What the agent builds | Checkpoint |
+| Stage | What you build | How you validate it |
 | --- | --- | --- |
-| 1 | Shared MCP contracts and server actions | `search_products` returns a catalog view |
-| 2 | Node MCP server and bundled UI resource | `/health` works and tools are discoverable |
-| 3 | Interactive React MCP App | Product, wishlist and cart buttons work |
-| 4 | Checkout and local preview | A confirmed demo order appears |
+| 1. MCP server | The shop's 13 tools served over MCP from a local Node server | `curl` against `127.0.0.1:3001` |
+| 2. MCP App | The ShopWave store as an in-chat UI, built from the existing widgets, then connected to ChatGPT and Claude with ngrok | Local preview, then ShopWave Demo listed in both hosts |
+| 3. Demo | Demo-ready checks and an offline fallback | Every chat prompt to try, plus the live demo script |
 
-Use Node 22.12 or newer. Work in the repository root. If your coding agent asks to install the three MCP packages, allow it. This demo needs no database, model API key, payment service or separate REST API.
-
-## Stage 1: Share the shop logic
-
-```text
-We finished WebMCP in this React ShopWave repo. Keep all website tools and
-shopping behavior working. Build the shared MCP layer; do not add a database
-or separate REST API, and do not copy the completed mcp-server branch.
-
-1. Keep shared/store.js as the one source of catalog, stock, cart and order
-   rules. Do not duplicate those rules in the MCP files.
-2. Keep the existing WebMCP JSON Schema profiles in
-   shared/tools/definitions.js. Add a separate `mcp` profile for each of the
-   12 shopping tools. Export createMcpToolDefinitions(z), returning names,
-   titles, descriptions, readOnly flags and Zod input schemas.
-3. Add one MCP-only tool, show_checkout. The 13 MCP tools are:
-   search_products, get_product, check_availability, get_cart, add_to_cart,
-   set_cart_quantity, remove_from_cart, get_wishlist, add_to_wishlist,
-   remove_from_wishlist, show_checkout, place_order, get_orders.
-   IDs are positive integers. Add-to-cart quantity is 1..1000;
-   set_cart_quantity allows 0..1000, where 0 removes the line. Search prices
-   are nonnegative numbers. Search status is in_stock, low_stock or
-   out_of_stock; sort is relevance, price_asc, price_desc or name.
-   No-argument tools have empty schemas. Validate customer email and all
-   required fields; confirmed is a Zod literal true.
-4. Use shared/tools/handlers.js for store calls. Create
-   mcp-server/actions.js with createDemoStore(), createActions(store), and
-   toolResult(actions, name, args). createDemoStore uses a Map with
-   getItem/setItem, passed to createStore; no database or browser globals.
-5. Each action returns a view name plus the data for that view. Include
-   categories, current cart and wishlist in each successful result. Use
-   catalog, product, cart, wishlist, checkout, confirmation and orders views.
-   toolResult returns text content AND structuredContent; errors return
-   isError and readable text.
-6. show_checkout must reject an empty cart. place_order must require
-   `{ customer, confirmed: true }`; customer has name, email, phone,
-   address, city, postal_code. Never return customer fields in the order
-   result or get_orders. No payment, shipment or email.
-
-Use Zod only on the MCP side. Keep the website's existing tool schemas and
-behavior unchanged. Do not add inventory, alerts, product editing, reset or
-comparison tools. Run the storefront build. Then call toolResult locally for
-search_products and show me its view and product count.
+```mermaid
+flowchart LR
+  C[ChatGPT] & K[Claude] -->|HTTPS /mcp| N[ngrok]
+  N -->|127.0.0.1:3001| S[mcp-server<br/>13 tools]
+  S --> R[(shared/store.js<br/>in-memory shop)]
+  S -.->|ui://shopwave/store.html| U[mcp-app<br/>src/widgets UI]
 ```
 
-**Expected:** `search_products` produces `view: "catalog"`; an empty cart makes `show_checkout` return a tool error. The website still builds.
+> [!NOTE]
+> **You need:** Node 22.12 or newer, a free [ngrok](https://ngrok.com) account, a ChatGPT account with developer mode, and a Claude account that can add custom connectors. No database, model API key, payment service or REST API. Allow the agent to install the MCP packages when it asks.
 
-## Stage 2: Expose the MCP server
+---
 
-```text
-Continue from Stage 1. Add the remote MCP server and a minimal buildable UI
-shell. Keep the 13 tools and existing website behavior. Use these exact paths:
-
-- mcp-server/index.js: Node HTTP entry point.
-- mcp-server/server.js: MCP tool and UI-resource registration.
-- mcp-app/index.html and mcp-app/main.jsx: a minimal React shell for now.
-- mcp-app/vite.config.js: build one self-contained HTML file at
-  dist/mcp-app/index.html, with its script and CSS inlined.
-
-Install @modelcontextprotocol/sdk 1.25.3, @modelcontextprotocol/ext-apps
-1.1.2, and zod 4.1.13. In package.json set:
-build:storefront = vite build
-build:mcp = vite build --config mcp-app/vite.config.js
-build = npm run build:storefront && npm run build:mcp
-start:mcp = node mcp-server/index.js
-dev:mcp = npm run build:mcp && node --watch mcp-server/index.js
-Keep the existing dev and preview scripts.
-
-In server.js, use McpServer plus registerAppTool and registerAppResource
-from @modelcontextprotocol/ext-apps/server. Register the HTML resource at
-ui://shopwave/store.html with RESOURCE_MIME_TYPE. Register every tool from
-createMcpToolDefinitions(z). Give each tool `_meta.ui.resourceUri` pointing
-to that resource. Pass tool calls to toolResult(actions, name, args). Mark
-read-only tools with readOnlyHint; mark place_order destructive. Permit
-https://images.unsplash.com in the UI resource's CSP for sample photos.
-
-In index.js, read the built HTML and createActions() ONCE when Node starts.
-Listen on 127.0.0.1:3001 by default. GET /health returns JSON with ok:true.
-POST /mcp uses StreamableHTTPServerTransport with
-sessionIdGenerator: undefined and enableJsonResponse: true. Create a new
-transport and McpServer per request, but pass the same actions object so
-ChatGPT and Claude share one demo cart. Reject other methods and browser
-Origin requests. Close request-scoped transport/server objects on response
-close. Do not add user sessions, authentication or a database.
-
-Run npm run build:mcp and npm run start:mcp. Check /health and perform an MCP
-tools/list request; verify that it returns the 13 names above. Do not infer
-success from reading the source. Fix build or startup errors before stopping.
-The UI may only show a placeholder at this stage.
-```
-
-**Expected:** `http://127.0.0.1:3001/health` returns `{"ok":true,"name":"shopwave-demo"}`. Opening `/mcp` in a browser can say that POST is required; that does not mean startup failed.
-
-## Stage 3: Put the store inside the chat
+## Stage 1: MCP server
 
 ```text
-Continue from Stage 2. Replace the placeholder in mcp-app/main.jsx with
-the interactive ShopWave React UI. Add mcp-app/bridge.js and mcp-app/style.css.
-Reuse the existing components in src/widgets/ and their CSS. Do not create
-another shop API or copy business rules into React.
+We finished WebMCP in this React ShopWave repo. Add an MCP server that
+exposes the same shop to ChatGPT and Claude. Keep the website's 12 WebMCP
+tools, their schemas and behavior unchanged. No database, REST API,
+authentication or user sessions. Don't copy the mcp-server branch.
 
-The bridge is standard MCP Apps JSON-RPC over parent.postMessage, not
-window.openai and not a direct fetch to /mcp. It must:
-- send ui/initialize, then ui/notifications/initialized;
-- receive ui/notifications/tool-result and pass structuredContent to React;
-- send tools/call for button clicks and match replies by request ID;
-- show host/tool errors, report size changes and clean up listeners/timers.
+Shared tool catalog (shared/tools/definitions.js)
+- Keep each tool's `web` profile. Add an `mcp` profile with title,
+  description, readOnly and schema(context), a function that returns a Zod
+  raw shape. Add show_checkout with an `mcp` profile only.
+- Export createMcpToolDefinitions(z). It builds shared pieces once
+  (id = positive int, quantity = int 1..1000, customer = object of trimmed
+  non-empty name, email (valid), phone (min 7), address, city, postal_code),
+  passes { z, id, quantity, customer } to each schema, and returns
+  { name, title, description, readOnly, inputSchema } in this order:
+  search_products, get_product, check_availability, get_cart, add_to_cart,
+  set_cart_quantity, remove_from_cart, get_wishlist, add_to_wishlist,
+  remove_from_wishlist, show_checkout, place_order, get_orders.
+- Schemas: search filters query, category, status (in_stock | low_stock |
+  out_of_stock), min_price/max_price (nonnegative), sort (relevance |
+  price_asc | price_desc | name), all optional; set_cart_quantity allows
+  0..1000 (0 removes); place_order is { customer, confirmed: z.literal(true) };
+  no-argument tools return {}. The website must never bundle Zod.
+- Descriptions say it's a demo store, prices are INR, and place_order needs
+  explicit user confirmation, must ask for missing fields and never invent
+  them. No payment, shipment or email.
 
-Render from structuredContent.view. Build these views:
-- catalog: search/filter/sort and product cards; View options calls get_product;
-- product: photo, specifications, variant selector, quantity, Add to cart,
-  Save/Unsave;
-- wishlist: saved variants and Add to cart/Remove;
-- cart: rows, quantity controls, remove, server-calculated total.
+Actions (mcp-server/actions.js)
+- createDemoStore(): createStore over an in-memory Map with getItem/setItem.
+- createActions(store = createDemoStore()): call the store only through
+  shared/tools/handlers.js. Every action returns a snapshot
+  { view, categories, cart, wishlist, ...extra }:
+  search_products -> catalog { products, filters }
+  get_product -> product { product }
+  check_availability -> product { product, variant }
+  cart tools -> cart; wishlist tools -> wishlist
+  show_checkout -> checkout; throws "Add a product to your cart before
+    checkout." when the cart is empty
+  place_order -> confirmation { order }; throws "Review the cart and confirm
+    this demo order first." unless confirmed === true
+  get_orders -> orders { orders }
+  Strip `customer` from every order you return.
+- toolResult(actions, name, args): text content with the JSON AND
+  structuredContent; on error { isError: true } with the message as text.
+  Unknown names are errors.
 
-Each button must call a named MCP tool through bridge.callTool. Keep prices,
-stock and totals from server results. Show loading, empty and error states.
-Add mcp-app/preview.html and mcp-app/preview.js as a local host simulator.
-Its parent page answers ui/initialize, delivers an initial
-ui/notifications/tool-result, routes tools/call to the SAME actions via
-toolResult, and responds to size changes. Set preview:mcp in package.json
-to `vite --host 127.0.0.1 --open /mcp-app/preview.html`. Build the app and
-use this preview to verify View options, wishlist and cart. The preview
-bypasses server-side Zod validation.
-Do not add inventory, alerts, product editing, reset or comparison screens.
+Server
+- Install @modelcontextprotocol/sdk 1.25.3 and zod 4.1.13.
+- mcp-server/server.js: createMcpServer(actions) returns an McpServer
+  { name: "shopwave-demo", version: "1.0.0" } and registers every tool from
+  createMcpToolDefinitions(z) with annotations readOnlyHint, destructiveHint
+  (place_order only) and openWorldHint: false. Each call returns
+  toolResult(actions, name, args).
+- mcp-server/index.js: node:http. createActions() ONCE at startup so ChatGPT
+  and Claude share one demo shop. Listen on MCP_HOST/MCP_PORT, default
+  127.0.0.1:3001. GET /health -> {"ok":true,"name":"shopwave-demo"}.
+  /mcp: POST only (405 with Allow: POST), 403 when an Origin header is
+  present, other paths 404. Per request create a
+  StreamableHTTPServerTransport (sessionIdGenerator: undefined,
+  enableJsonResponse: true) and a new server, close both on response close,
+  and return a JSON 500 on failure. Log the URL on start; close on SIGINT.
+- package.json: start:mcp = node mcp-server/index.js,
+  dev:mcp = node --watch mcp-server/index.js. Keep existing scripts.
+
+Run npm run build. Start the server and use curl to show me /health, an MCP
+tools/list with all 13 names, a tools/call for search_products, and
+show_checkout failing on an empty cart. Don't infer success from reading
+the source.
 ```
 
-**Expected:** product cards appear when `search_products` returns, and clicks call `get_product`, `add_to_wishlist` or `add_to_cart` through the bridge.
+### Validate Stage 1
 
-## Stage 4: Checkout and rehearse
+Everything runs locally in this stage. Start the server with `npm run start:mcp` and keep it running.
+
+| Check | How | Expected |
+| --- | --- | --- |
+| Server is up | `curl http://127.0.0.1:3001/health` | `{"ok":true,"name":"shopwave-demo"}` |
+| `/mcp` is MCP-only | Open `http://127.0.0.1:3001/mcp` in a browser | "Stateless MCP accepts POST requests." This is expected |
+| Tools are listed | The agent's `tools/list` | 13 names, `search_products` first |
+| Rules hold | The agent's `tools/call` | `search_products` returns `view: "catalog"` with 27 products; `show_checkout` on an empty cart errors |
+| Website unchanged | `npm run build` | Passes; the site still has 12 WebMCP tools |
+
+You can also list the tools yourself:
+
+```sh
+curl -s http://127.0.0.1:3001/mcp \
+  -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+```
+
+---
+
+## Stage 2: MCP App
+
+The store already has a widget library in `src/widgets/`, which the MCP App reuses instead of building new UI. To browse the widgets, run `npm run dev` and open **Component library** in the footer.
+
+| Widget | Used for in the MCP App |
+| --- | --- |
+| `CardGrid`, `Card` | Catalog: one card per product with a **View options** button |
+| `Badge` | In stock, Low stock and Out of stock labels |
+| `Photo` | Product photo and thumbnail gallery, with the built-in fallback |
+| `SectionHeader` | "27 products" heading above the grid |
+| `DataTable` | Product specifications |
+| `ListRow` | Wishlist rows and cart rows |
+| `Stepper` | Quantity control on the product page and in each cart row |
 
 ```text
-Finish the same MCP App. Add a checkout view opened by show_checkout.
-Show the current cart and total, then collect six fictional customer fields:
-name, email, phone, address, city, postal_code. Require an explicit review
-checkbox. Only then call place_order with
-`{ customer: { name, email, phone, address, city, postal_code }, confirmed: true }`.
-Do not invent customer details. No payment, shipment or email. On success,
-show a confirmation view with the order ID and cleared cart. Add an Orders
-view with summaries but no customer details. Keep server-side confirmation and
-validation; the checkbox alone is not enough.
+Continue from Stage 1. Turn the MCP server into an MCP App: the ShopWave
+store renders inside ChatGPT and Claude. Keep the 13 tools, the server rules
+and the website unchanged. Reuse src/widgets/ (import from
+src/widgets/index.js plus src/widgets/widgets.css): Card, CardGrid, Badge,
+Photo, SectionHeader, DataTable, ListRow and Stepper. Don't write new versions
+of them and don't copy store rules into React.
 
-Run npm run build and fix failures. In the preview verify:
-View options -> Add to cart -> Checkout -> confirmed demo order -> Orders.
-Also try checkout with an empty cart and place_order without confirmation.
-Add scripts/build-preview.mjs and a build:preview script to make a static
-dist/mcp-preview/preview.html with the bundled app beside it.
-Keep the working website unchanged. List files created and any remaining
-differences from these requirements.
+Server
+- Install @modelcontextprotocol/ext-apps 1.1.2. In mcp-server/server.js
+  export RESOURCE_URI = "ui://shopwave/store.html" and change to
+  createMcpServer(actions, html). Use registerAppResource and registerAppTool
+  from @modelcontextprotocol/ext-apps/server. The resource returns the html
+  with RESOURCE_MIME_TYPE and _meta.ui { prefersBorder: true,
+  csp: { resourceDomains: ["https://images.unsplash.com"] } }. Every tool
+  keeps its annotations and adds _meta.ui.resourceUri = RESOURCE_URI.
+- index.js reads dist/mcp-app/index.html ONCE at startup and passes it in.
+
+Build (mcp-app/vite.config.js)
+- root is mcp-app/, output dist/mcp-app/index.html as ONE self-contained
+  file: a small post plugin inlines the entry script and CSS into the HTML
+  and removes the separate files (cssCodeSplit false, inlineDynamicImports).
+- package.json: build:storefront = vite build,
+  build:mcp = vite build --config mcp-app/vite.config.js,
+  build = npm run build:storefront && npm run build:mcp,
+  dev:mcp = npm run build:mcp && node --watch mcp-server/index.js,
+  preview:mcp = vite --host 127.0.0.1 --open /mcp-app/preview.html.
+
+Bridge (mcp-app/bridge.js): createBridge(onResult, onStatus)
+- Standard MCP Apps JSON-RPC 2.0 over window.parent.postMessage. No
+  window.openai, never fetch /mcp. Ignore messages not from window.parent.
+- connect(): if not in an iframe, show "Open this store from an MCP host, or
+  use the local preview." Otherwise request ui/initialize (appInfo,
+  protocolVersion "2026-01-26"), then send ui/notifications/initialized.
+- Requests get incrementing ids and a 30 s timeout. Handle
+  ui/notifications/tool-result (pass to onResult), tool-cancelled, and reply
+  to ui/resource-teardown.
+- callTool(name, args) sends tools/call, passes the result to onResult and
+  throws its text if isError. On "unknown tool", tell the user to refresh
+  the connection's tools and open a new chat.
+- resize(height) sends ui/notifications/size-changed; dispose() removes the
+  listener and clears pending timers.
+
+App structure (small files, one job each; none over ~80 lines)
+- main.jsx only imports the CSS and mounts <App />. No views, hooks or
+  helpers in it.
+- App.jsx: the shell (header, nav, progress, errors) and the view lookup.
+- useStore.js: a useStore() hook that owns the bridge, the snapshot, busy
+  and error state, plus run(name, args) and a RunProvider/useRun() context
+  so components call tools without prop drilling. Progress text lives in
+  ONE map keyed by tool name, not in every button.
+- format.js: only plural(); money and stock labels come from
+  src/components.jsx.
+- components/: app-only pieces used in more than one place or with their
+  own state: ToolButton (a w-btn that calls one tool), Nav, FilterForm,
+  Gallery, CartLines (rows + server total, editable or read-only) and
+  OrderCard.
+- views/: one file per structuredContent.view (Catalog, Product, Wishlist,
+  Cart, Checkout, Confirmation, Orders) and views/index.js exporting a
+  VIEWS map plus viewKey(snap), which resets local state when the product
+  or filters change.
+- Components compose the src/widgets/ pieces. Repeated markup becomes a
+  component, not copy-paste.
+
+App behavior (mcp-app/index.html, style.css and the files above)
+- Render from structuredContent.view. A ResizeObserver reports height.
+- Header "ShopWave · Demo store", a notice "No payment or delivery", and a
+  nav: Products, Wishlist (n), Cart (n), Orders, all from the snapshot.
+- catalog: filter form (search, category from categories, availability, min
+  and max ₹, sort; Search and Clear filters) calling search_products,
+  SectionHeader with the count, CardGrid of Card with Photo, INR "From"
+  price, Badge and a View options button (get_product). Empty state.
+- product: photo with thumbnails, category, name, description, a variant
+  select (label · price · N available), Badge, price, Stepper quantity,
+  Add to cart (disabled when out of stock), Save/Unsave, and a DataTable
+  of specs.
+- wishlist: ListRow per item with Add to cart and Remove.
+- cart: ListRow per line with a Stepper (min 0, calls set_cart_quantity),
+  subtotal, Remove, the item count and server total, and "Continue to
+  checkout" (show_checkout).
+- checkout: the same cart rows (read-only, with an Edit cart button,
+  because a quantity change returns the cart view) plus six
+  fictional-detail fields and an "I reviewed this cart and confirm a demo
+  order" checkbox. The Place demo
+  order button stays disabled until it is ticked, then calls place_order
+  with { customer, confirmed }. Editing a field unticks it.
+- confirmation: order ID, date, total, items, "No payment taken, shipment
+  arranged, or email sent", Continue shopping. orders: the same cards.
+- One request at a time: disable controls while busy, show progress text and
+  errors in role="alert". Prices, stock and totals come only from results.
+
+Local preview (mcp-app/preview.html + preview.js)
+- A parent page that iframes index.html and acts as the host: answers
+  ui/initialize, sends a search_products tool-result after initialized,
+  routes tools/call to toolResult on createActions() from
+  mcp-server/actions.js, resizes on size-changed, and has a dropdown to
+  simulate chat requests (products, cart, wishlist, checkout, orders).
+
+Run npm run build and restart the server. Show a real resources/read of
+ui://shopwave/store.html and a tools/list with _meta.ui.resourceUri on every
+tool. In the preview walk through View options -> Save -> Add to cart ->
+change quantity -> Continue to checkout -> place order -> Orders. No
+inventory, alerts, product editing, reset or comparison screens. List the
+files you created with their line counts.
 ```
 
-**Expected:** a confirmed order gets an ID, clears the cart and reduces stock. An unconfirmed order fails. Restarting Node resets its in-memory shop.
+### Validate Stage 2 locally
 
-## Try it in ChatGPT and Claude
+| Check | How | Expected |
+| --- | --- | --- |
+| App builds as one file | `npm run build` | `dist/mcp-app/index.html` exists with no separate JS or CSS files |
+| No duplicate helpers | `grep -rn "NumberFormat\|Low stock\|--bg:#faf8f5" mcp-app` | No matches: money, labels and tokens are imported from `src/` |
+| App is split into components | `wc -l mcp-app/*.js* mcp-app/components/* mcp-app/views/*` | `main.jsx` only mounts `<App />`; one file per view; no file over ~80 lines |
+| UI is served | The agent's `resources/read` | HTML with MIME type `text/html;profile=mcp-app` |
+| Tools point at the UI | The agent's `tools/list` | Every tool has `_meta.ui.resourceUri` = `ui://shopwave/store.html` |
+| Works in the preview | `npm run preview:mcp` | Cards load; the dropdown switches views; View options → Save → Add to cart → checkout → Orders works |
+| Server still guards | In the preview, with an empty cart, pick **Open checkout** | "Add a product to your cart before checkout." |
 
-After the local checks, run `npm run build:mcp` and `npm run start:mcp`. In another terminal run `ngrok http 3001`. Add the HTTPS tunnel URL **with `/mcp` appended** as a custom MCP connection in each host. Keep both processes running. Use fictional customer details.
+### Connect ShopWave to ChatGPT and Claude
 
-> Use ShopWave Demo to show me wireless headphones under ₹9,000 in its interactive interface. Let me choose a variant and add one to the cart.
+ChatGPT and Claude reach your server from the internet, so ngrok gives it a public HTTPS address.
 
-Then open checkout, confirm a demo order and ask for recent orders. The two hosts use the same Node shop but have separate conversations. The website's browser storage is separate too. See the finished branch's `workshop/MCP-SETUP.md` if your presenter has shared it.
+**1. Run the server and the tunnel.** Keep both terminals open for the whole session.
 
-## Stuck? Paste this
+| Terminal | Command |
+| --- | --- |
+| 1 | `npm run build && npm run start:mcp` |
+| 2 | `ngrok http 127.0.0.1:3001` |
+
+First time with ngrok? Install it (`brew install ngrok` on macOS, `winget install ngrok.ngrok` on Windows, or [download it](https://ngrok.com/download)), copy your token from [dashboard.ngrok.com](https://dashboard.ngrok.com) and run `ngrok config add-authtoken <YOUR_TOKEN>` once. Never paste the token into a chat.
+
+ngrok prints a line like `https://abcd-1234.ngrok-free.app -> http://127.0.0.1:3001`. Open `https://abcd-1234.ngrok-free.app/health` in a browser (click **Visit Site** if ngrok asks) and check you see `{"ok":true,"name":"shopwave-demo"}`. Your connector URL is that address **plus `/mcp`**:
 
 ```text
-Fix only the current stage. Run its build/check, show me the FIRST failing
-command and error, and make the smallest change that fixes it. Do not rewrite
-working WebMCP tools or add features outside this prompt. Then rerun the
-check and report what passed.
+https://abcd-1234.ngrok-free.app/mcp
 ```
 
-If the UI works in the preview but not in ChatGPT or Claude, check that the host discovered all 13 tools, the resource URI is `ui://shopwave/store.html`, the app was rebuilt before Node started, and the connection points to the current HTTPS `/mcp` URL. A new conversation or refreshed connection may be needed after changing tool metadata.
+**2. Connect ChatGPT.**
 
-If you fall behind, compare with the completed `mcp-server` branch and rejoin the next demonstration. That checkpoint contains the finished implementation; these prompts aim for the same files and behavior rather than identical formatting.
+1. Settings → **Apps & Connectors** → **Advanced settings** → turn on **Developer mode**.
+2. Back in **Apps & Connectors**, click **Create**.
+3. Name: `ShopWave Demo`. MCP server URL: `https://<ngrok-domain>/mcp`. Authentication: **No authentication**.
+4. Accept the notice and create it. ChatGPT lists the 13 tools.
+
+**3. Connect Claude.**
+
+1. Settings → **Connectors** → **Add custom connector**.
+2. Name: `ShopWave Demo`. URL: `https://<ngrok-domain>/mcp`. Leave OAuth empty.
+3. Click **Add**. Claude lists the 13 tools.
+
+> [!IMPORTANT]
+> Free ngrok URLs change every time ngrok restarts; update the URL in both connectors when that happens. After any rebuild, restart terminal 1 and refresh the connector (ChatGPT: **Refresh**; Claude: remove and re-add it), then start a new chat. Menus can differ by plan; see the [OpenAI](https://developers.openai.com/apps-sdk/quickstart) and [Claude](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp) guides.
+
+| Check | How | Expected |
+| --- | --- | --- |
+| Tunnel works | `https://<ngrok-domain>/health` | `{"ok":true,"name":"shopwave-demo"}` |
+| ChatGPT is connected | Apps & Connectors → ShopWave Demo | 13 tools listed |
+| Claude is connected | Settings → Connectors → ShopWave Demo | 13 tools listed |
+
+You'll chat with ShopWave in Stage 3.
+
+---
+
+## Stage 3: Demo
+
+```text
+We demo ShopWave live in ChatGPT and Claude next. Don't add features or
+redesign anything; make it demo-ready and fix only what's broken.
+
+1. Add scripts/build-preview.mjs and build:preview =
+   npm run build:mcp && node scripts/build-preview.mjs. It builds
+   mcp-app/preview.html with the mcp-app Vite config into dist/mcp-preview/
+   and copies dist/mcp-app/index.html beside it, so the simulator works as
+   an offline fallback.
+2. Run npm run build and npm run build:preview. Confirm the website still
+   registers 12 WebMCP tools and Zod is not in the website bundle.
+3. Start a fresh server and, with real MCP requests to
+   http://127.0.0.1:3001/mcp, run the demo flow and check each view:
+   search_products (category Electronics, max_price 9000, price_asc) ->
+   get_product 1 -> check_availability on Black (out of stock) and Blue ->
+   add_to_wishlist Blue -> get_wishlist -> add_to_cart Blue x2 ->
+   set_cart_quantity 3 -> add_to_cart 999 (fails: only 3 available) ->
+   remove_from_wishlist -> get_cart -> show_checkout -> place_order without
+   confirmed (fails) -> place_order with Demo Shopper, demo@example.com,
+   9999999999, 1 Demo Road, Pune, 411001, confirmed true -> get_orders ->
+   get_product 1 (Blue now out of stock) -> show_checkout (fails, empty).
+4. Check every success has structuredContent with view, categories, cart
+   and wishlist, and that no customer field appears in place_order or
+   get_orders. Check /health, 405 on GET /mcp and 403 with an Origin header.
+5. Restart the server so the demo starts from seed data, and confirm the
+   ngrok /health URL still answers.
+
+Report a table of step, tool, expected, actual, pass/fail. Then list the
+exact terminal commands to run before I go on stage.
+```
+
+### Validate Stage 3 (pre-flight)
+
+- [ ] The agent's table is all **pass**
+- [ ] Terminal 1: `npm run start:mcp`, freshly restarted (seed stock, empty cart, no orders)
+- [ ] Terminal 2: ngrok running, and `https://<ngrok-domain>/health` returns ok
+- [ ] Both connectors use the **current** `/mcp` URL and were refreshed after the last build
+- [ ] A new chat open in ChatGPT and in Claude, with ShopWave Demo selected
+- [ ] Fallback ready: `npm run preview:mcp` or `dist/mcp-preview/preview.html`
+
+### Chat with ShopWave in ChatGPT and Claude
+
+Open a new chat, select **ShopWave Demo** (ChatGPT: **+** or `@`; Claude: **+ → Connectors**), and start with:
+
+> Use ShopWave Demo for this whole shopping conversation. Use its tools for products, stock, wishlist, cart and checkout, and show its interactive interface.
+
+**Warm-up: check every kind of tool works.** Restart terminal 1 afterwards so the demo starts fresh.
+
+| Try this | Tools it uses | You should see |
+| --- | --- | --- |
+| *Show me all products.* | `search_products` | The store widget with 27 product cards |
+| *Find wireless noise-cancelling headphones and tell me which colours are in stock.* | `search_products`, `get_product` | Black and Silver out of stock, Blue has 3 left |
+| *Save the blue ones and show my wishlist.* | `add_to_wishlist`, `get_wishlist` | Wishlist (1) |
+| *Add 2 of the blue ones to my cart, then make it 3.* | `add_to_cart`, `set_cart_quantity` | Cart (3), total ₹25,497 |
+| *Remove them from my cart.* | `remove_from_cart` | Cart (0) |
+| *Show my orders.* | `get_orders` | "No orders yet." |
+| In Claude, after adding to the cart in ChatGPT: *What's in my cart?* | `get_cart` | The same cart: both hosts share one shop |
+
+**Live demo script.** *Chat* rows are typed in the chat; *Widget* rows are clicks and entries in the store UI:
+
+| # | Where | Do this | Tool | You should see |
+| --- | --- | --- | --- | --- |
+| 1 | Chat | *Show me Electronics under ₹9,000, cheapest first.* | `search_products` | Filtered cards with stock badges |
+| 2 | Widget | **View options** on the headphones | `get_product` | Photos, specs and three colours |
+| 3 | Chat | *Is the black one available?* | `check_availability` | Black is out of stock |
+| 4 | Widget | Choose **Blue**, **Save to wishlist** | `add_to_wishlist` | Wishlist (1) |
+| 5 | Chat | *Show my wishlist.* | `get_wishlist` | Blue headphones saved |
+| 6 | Widget | **Add to cart**, then raise the quantity to 3 in the cart | `add_to_cart`, `set_cart_quantity` | Total ₹25,497 |
+| 7 | Chat | *Add 999 more.* | `add_to_cart` | Error: only 3 available |
+| 8 | Chat | *Remove them from my wishlist and show my cart.* | `remove_from_wishlist`, `get_cart` | Wishlist (0), cart unchanged |
+| 9 | Widget | **Continue to checkout** | `show_checkout` | Cart plus the details form |
+| 10 | Widget | Fill in the details, tick the box, **Place demo order** | `place_order` | Order ID, Cart (0) |
+| 11 | Chat | *Show my orders.* | `get_orders` | Order card, no customer details |
+| 12 | Chat | *Show the headphones again.* | `get_product` | Blue is now out of stock |
+| 13 | Chat | *Open checkout.* | `show_checkout` | "Add a product to your cart before checkout." |
+
+Fictional details: `Demo Shopper` · `demo@example.com` · `9999999999` · `1 Demo Road` · `Pune` · `411001`.
+
+**Moments worth showing:**
+
+- **One shop, two hosts.** Add an item in ChatGPT, then ask Claude *"What's in my cart?"*
+- **Safe checkout.** Ask *"Place the order with any details."* The model has to ask you, and the server rejects an unconfirmed order.
+- **Real stock.** After step 12, nobody can buy the Blue headphones, in either host.
+- **Reset.** Restart terminal 1 between runs. The ngrok URL and the connectors keep working.
+
+---
+
+## Stuck? Try these in order
+
+### Level 1: the fix-it prompt (any stage)
+
+```text
+Fix only the current stage. Run its build or check, show me the FIRST
+failing command and error, and make the smallest change that fixes it.
+Don't rewrite working tools or add features outside the prompt. No code
+duplication: fix the existing code in place, never add a second copy.
+```
+
+### Level 2: match what you see
+
+| What you see | Do this |
+| --- | --- |
+| `/health` works locally but not through ngrok | Restart with `ngrok http 127.0.0.1:3001` and use the new URL |
+| ngrok asks for an authtoken (`ERR_NGROK_4018`) | Run `ngrok config add-authtoken <YOUR_TOKEN>` once |
+| The server won't start: `dist/mcp-app/index.html` missing | Run `npm run build:mcp` first (Stage 2 onward) |
+| The host can't connect or finds no tools | The URL must start with `https://`, end in `/mcp` and match the current ngrok address |
+| "Unknown tool" or a missing tool | Refresh the connector (ChatGPT) or remove and re-add it (Claude), then start a new chat |
+| Text answers but no widget | Rebuild, restart, refresh the connector. Paste: `Check every tool has _meta.ui.resourceUri set to ui://shopwave/store.html and the resource uses RESOURCE_MIME_TYPE.` |
+| Blank widget or missing photos | Paste: `Check the resource CSP allows https://images.unsplash.com and dist/mcp-app/index.html inlines all JS and CSS.` |
+| Works in the preview, buttons fail in the host | Paste: `Make sure bridge.js sends tools/call over window.parent.postMessage, not fetch or window.openai, and matches replies by id.` |
+| The model answers from general knowledge | Reselect ShopWave Demo and start the prompt with *"Use ShopWave Demo to..."* |
+
+### Level 3: catch up
+
+- Pair up: one person drives, one reads.
+- Compare with the finished `mcp-server` branch.
+- Keep following along in `npm run preview:mcp` if a host misbehaves.
+- Watch the presenter's screen and rejoin at the next stage.
+
+> [!WARNING]
+> The ngrok URL exposes an unauthenticated demo shop. Use fictional data and stop ngrok (`Ctrl+C`) when you finish.
