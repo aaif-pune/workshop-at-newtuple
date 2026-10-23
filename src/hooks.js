@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { store } from './api'
 
-// Re-run an async api call whenever the shop data changes (UI, agent or another tab).
+// Re-run an async api call whenever the shop data changes (UI, add-on or another tab).
 export function useApi(fn, deps = [], initial = null) {
   const [data, setData] = useState(initial)
   const [tick, setTick] = useState(0)

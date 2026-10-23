@@ -1,48 +1,17 @@
-# ShopWave: website tools, in-chat MCP Apps and AEO
+# ShopWave: a storefront an AI agent can operate (WebMCP)
 
-The website below is a frontend-only demo. No database or API keys. The shop is one JSON
-document (seeded from `shared/products.json`, then stored in your browser's `localStorage`).
-The React UI and the WebMCP tools use the same `src/api.js`.
+Frontend-only demo. No backend, no database, no API keys. The shop is one JSON
+document (seeded from `src/data/products.json`, then stored in your browser's
+`localStorage`). The React UI and the WebMCP tools use the same `src/api.js`.
 
-## MCP server and in-chat store
-
-This branch also contains a Node MCP server (`mcp-server/`) and an embedded React store (`mcp-app/`).
-They reuse `shared/store.js` and `shared/products.json`, with in-memory state and no database.
-The website keeps browser storage.
-
-Read **[MCP setup and demo guide](workshop/MCP-SETUP.md)** for installation, local preview, and the
-ChatGPT and Claude connections.
-
-```sh
-npm install
-npm run build
-npm run start:mcp
-```
-
-Use `npm run preview:mcp` to rehearse the embedded UI in a local host simulator. Use `npm run dev` for the website.
-
-## Answer engine optimisation (AEO)
-
-`set_aeo_metadata` is the one tool that writes catalog data. It stores what answer engines and search engines quote
-for a product: `summary` (a short direct answer), `faqs`, `keywords`, `seo_title` (60 characters) and
-`meta_description` (160). Only the fields you pass are changed; `faqs` and `keywords` replace the existing lists.
-Overlong text returns a warning. It is available on the website (WebMCP) and on the MCP server.
-
-- `src/aeo.js` turns the metadata into schema.org JSON-LD (`Product` with offers and stock status, plus `FAQPage`),
-  a page title and a meta description. `src/views/ProductPage.jsx` calls it and also shows the quick answer and FAQs.
-- The MCP App shows the quick answer and FAQs on the product view.
-- The JSON-LD is written by JavaScript in the browser, so it is visible to browser agents and crawlers that run
-  JavaScript. Crawlers that only read raw HTML will not see it.
-- Write factual content only. The tool never invents product facts for you.
-
-## Run the website
+## Run
 
 ```bash
 npm install
 npm run dev
 ```
 
-Opens http://localhost:5173 (Node 22.12+). The footer shows **WebMCP: N tools live** (13 tools) when your browser exposes `document.modelContext` or `navigator.modelContext`.
+Opens http://localhost:5173 (Node 22+). A small pill (bottom-left) shows **WebMCP: N tools live** when your browser exposes `document.modelContext`.
 
 ## Component library (widgets)
 
@@ -62,53 +31,62 @@ The store's product card (`src/views/ProductCard.jsx`) is just `<Card>` filled w
 ## Photos
 
 Product photos are free-to-use [Unsplash](https://unsplash.com) images, loaded by URL (`image` field in
-`shared/products.json`), so the laptop needs internet. If a photo fails to load, a neutral placeholder is shown.
-To use your own, put files in `public/` and set `image` to `/yourfile.jpg`.
+`src/data/products.json`), so the laptop needs internet. If a photo fails to load, a neutral placeholder is shown.
+To use your own, put files in `public/` and set `image` to `/yourfile.jpg`. New products added by the agent can pass an `image` URL too.
 
 ## Category themes
 
 The store re-skins itself for what you browse: pick a category, or search for something (e.g. "yoga mat" gives the
-Sport look, "kettle" gives Home). Each theme has its own colours, shapes, hero photo and announcement bar.
-Themes live in `src/themes.js` and `[data-theme=...]` blocks in `src/style.css`.
+Sport look, "kettle" gives Home). Each theme has its own colours, shapes, hero photo and announcement bar. Agent searches
+trigger the same change. Themes live in `src/themes.js` and `[data-theme=...]` blocks in `src/style.css`.
 
 ## Where is my data? (localStorage)
 
-Everything lives in your browser's `localStorage` under the key `shopwave:v2`, per origin (host **and** port).
+Everything lives in your browser's `localStorage` under the key `shopwave:v3`, per origin (host **and** port).
 It **survives reloads and browser restarts**. It resets when you click **Reset demo data** (footer), open the site
 with `?reset` (e.g. `http://localhost:5173/?reset`), clear site data in DevTools, or use a private window.
 
 ## What is in the shop
 
-Home with hero and category tiles, header search, product pages (`#/product/ID`, photo gallery), category,
-availability and price filters, sort, variants with live quantity and status (`in_stock`, `low_stock` at 5 or
-fewer, `out_of_stock`), a wishlist, a cart with quantity controls, a separate checkout form (name, email, phone,
-address, city, postal code) and an order confirmation with an order list. Use **Reset demo data** (footer) to
-restore the seed data.
+Home with hero and category tiles, header search, product pages (`#/product/ID`), cart, separate checkout, order confirmation, category / availability / price filters, sort, variants with live quantity and
+status (`in_stock`, `low_stock` at 5 or fewer, `out_of_stock`), wishlist, cart, checkout form
+(name, email, phone, address, city, postal code), orders, and an **Inventory** tab with
+restock and add product (footer link → `#/admin`). Use **Reset demo data** (footer) to restore the seed data.
 
 ## Demo script (say these to the agent, with the store open in its browser)
 
-1. "Find wireless noise-cancelling headphones in black." The agent searches. The black one is **out of stock**.
-2. "Which colour is available? Save it to my wishlist." The agent checks stock and saves the variant.
-3. "Add 2 to my cart, then make it 3." `add_to_cart`, then `set_cart_quantity`; the cart page updates.
-4. "Buy them." The agent must **ask you** for name, email, phone, address, city and postal code, then calls
-   `place_order`. The order summary page opens.
+1. "Find wireless noise-cancelling headphones in black." → agent searches; it is **out of stock**.
+2. "Notify me when it is back." → `notify_when_available`; Inventory now shows 🔥 **High demand**.
+3. "Check inventory for high-demand items and add 20 units of the black headphones." → `restock_variant`;
+   a **Back in stock** notification slides in and lands in the bell menu (header), and the request is fulfilled.
+4. "Check it again." → now in stock. "Wishlist it" or "I want 2." → `add_to_wishlist` / `add_to_cart`.
+5. "Add a new product: Smart Water Bottle, Electronics, 500 ml variant at ₹1,299, 7 units." → `add_product`; a **New product added** notification appears.
+6. "Place the order." → agent must **ask you** for name, email, phone, address, city, postal code, then `place_order`.
 
-## WebMCP tools
+## Layout: shop vs. agent add-ons
 
-Discover: `search_products`, `get_product`, `check_availability`, `add_to_wishlist`, `remove_from_wishlist`, `get_wishlist`.
-Cart: `add_to_cart`, `set_cart_quantity`, `get_cart`, `remove_from_cart`.
-Buy: `place_order`, `get_orders`.
-Catalog content: `set_aeo_metadata`.
+- `src/`: the shop. It knows nothing about MCP or agents.
+- `agent/tools.js`: the tool definitions (the file to edit in the lab), shared by every agent add-on. `createTools(api, show)` takes the shop api and an optional UI-steering function, so the same tools can run in the browser or in a Node MCP server.
+- `agent/webmcp/`: registers the tools with the browser and shows the status pill. Hooked in by one line in `src/main.jsx`.
+- `agent/mcp-server/`: the same tools as a stdio (or HTTP) MCP server, with an MCP Apps view built from `src/widgets/` (see below). Own `package.json`; the shop never imports it.
 
-Tool definitions live in `shared/tools/definitions.js`. `shared/tools/handlers.js` calls the store rules.
-`src/webmcp-tools.js` adds website navigation (so people can watch the agent work) and `src/webmcp.js`
-registers the tools in the browser. The only tool that writes catalog data is `set_aeo_metadata`; there are no tools that edit products or stock.
+**Plain shop, no agent:** delete `agent/` and the `import '../agent/webmcp'` line in `src/main.jsx`.
+
+## WebMCP tools (`agent/tools.js`)
+
+`search_products`, `get_product`, `check_availability`, `add_to_wishlist`, `remove_from_wishlist`,
+`get_wishlist`, `notify_when_available`, `get_notifications`, `get_inbox`, `get_inventory`, `restock_variant`, `add_product`,
+`add_to_cart`, `get_cart`, `remove_from_cart`, `place_order`, `get_orders`,
+and for Session 4 `audit_aeo`, `preview_aeo_update`, `set_aeo_metadata` (see below).
+
+Each tool is `{ name, description, properties, run }`. `run` calls `api.*`. Several tools also
+switch the visible tab so the audience sees what the agent is doing.
 
 ## WebMCP and ChatGPT: setup and troubleshooting
 
 The page looks for `document.modelContext` (current spec) and falls back to `navigator.modelContext`
 (older drafts), and keeps retrying for about 15 seconds in case the browser injects it late.
-The footer pill shows what it found; hover it for details.
+The bottom-left pill shows what it found; hover it for details.
 
 - **Pill says "N tools live"**: the browser accepted the tools. Prompt the agent normally.
 - **Pill says "not detected"**: this browser does not expose WebMCP to the page. Open DevTools and run
@@ -123,4 +101,78 @@ The footer pill shows what it found; hover it for details.
 
 ## Other
 
-- Website data lives per browser profile and per origin. The MCP server keeps its own in-memory shop; the two do not sync.
+- Data lives per browser profile and per origin. Open the same `localhost` URL in the agent's browser and your own, and they are separate shops.
+- Data is not shared between different ports or browsers.
+
+## MCP server (`agent/mcp-server/`)
+
+Same 20 tools as WebMCP, served over stdio to any MCP client (Claude Desktop, Claude Code, VS Code, ChatGPT apps...),
+or over HTTP with `npm run start:http` for remote hosts (see "Remote hosts" below).
+`search_products`, `get_product`, `get_cart`, `add_to_cart`, `remove_from_cart`, `get_inventory`, `get_orders` and the three
+AEO tools also return an interactive view (MCP Apps) drawn with the shop's widgets; its Add to cart / Notify me / Remove /
+Approve and apply buttons call tools back.
+
+```bash
+cd agent/mcp-server
+npm install
+npm run build   # bundles the view (needs the root npm install too: it reuses the shop's vite, react, widgets)
+```
+
+Client config (use absolute paths):
+
+```json
+{ "mcpServers": { "shopwave": {
+  "command": "/ABS/PATH/agent/mcp-server/node_modules/.bin/tsx",
+  "args": ["/ABS/PATH/agent/mcp-server/server.js"]
+} } }
+```
+
+Claude Code: `claude mcp add shopwave -- /ABS/PATH/agent/mcp-server/node_modules/.bin/tsx /ABS/PATH/agent/mcp-server/server.js`
+
+Its data is in `agent/mcp-server/shop-data.json` (created on first change; `npm run reset` deletes it). It is **not** the browser
+shop's data: the browser keeps its own copy in localStorage. After updating the seed (e.g. to this Session 4 version),
+run `npm run reset` once so the server does not keep an older copy.
+
+### Remote hosts: claude.ai and ChatGPT (HTTP)
+
+```bash
+cd agent/mcp-server
+npm run start:http   # http://127.0.0.1:3001/mcp, health check at /health (PORT=… to change)
+ngrok http 3001      # second terminal; use https://<your-ngrok-domain>/mcp
+```
+
+- **Claude:** Customize → Connectors → Add custom connector → the `/mcp` URL, **No sign-in**. Then turn it on in a new chat (+ → Connectors).
+- **ChatGPT:** Settings → Plugins → Add → custom MCP server → the `/mcp` URL, authentication **None**, then **Connect**. Start a Work chat and pick it with `@`.
+- After changing tools, disconnect and reconnect (or refresh) the connector so the host reloads the tool list.
+- The endpoint has no authentication: share the tunnel URL only for the workshop and stop ngrok afterwards.
+
+## Session 4: AEO (get found, get chosen)
+
+A buyer asks an AI which water bottle to buy for a trek; it picks a rival. We audit our listing, add the seller's
+facts with a person approving the exact change, ask again, and the AI picks our bottle. The step-by-step run sheet with
+prompts is the Session 4 guide (shared separately).
+
+What it adds:
+
+- **Data** (`src/data/products.json`): a `seller` and `kind` on products, five rival water bottles (#28-#32), and AEO fields
+  on a product's `aeo` object: `summary` ("In short"), `faqs`, `keywords`, `best_for`, `about` ("About this item"),
+  `seo_title`, `meta_description`. Our bottle #21 starts thin.
+- **Logic** (`src/services/aeo.js`, pure functions): a six-check audit with must-have facts per kind of product
+  (`KEY_SPECS`), Product information gaps, a fix drafted only from existing facts, previews with a `change_id`,
+  and schema.org Product/Offer/FAQPage JSON-LD. Search also matches the AEO text and ranks by relevance.
+- **Tools** (`agent/tools.js`, for WebMCP and the MCP server):
+  - `audit_aeo` (read-only): score out of 6, rules, gaps, rivals compared and questions for the seller.
+  - `preview_aeo_update` (read-only): exact changes, new facts to confirm, warnings and a `change_id`. Rejects naming a rival.
+  - `set_aeo_metadata`: applies exactly the approved preview (`change_id` and `confirmed: true`), once. FAQs are added
+    by default (`faqs_mode: "replace"` rewrites them); an empty spec value removes a fact.
+- **Shop**: a Human view / AI view toggle on product pages (`#/product/21?view=ai`), "In short", "About this item",
+  grouped Product information and FAQs, plus JSON-LD (`#ld-json`), the SEO title and the meta description in the page head.
+- **MCP App**: the audit scorecard, and the preview with **Approve and apply**.
+
+Check it:
+
+1. `http://localhost:5173/?reset#/product/21?view=ai` shows 0/6.
+2. Reset between rehearsals: `?reset` on the shop, `npm run reset` (then restart) for the MCP server.
+
+The shop's own search stands in for an answer engine, and JSON-LD added by JavaScript is invisible to crawlers that read
+raw HTML (render it on the server in production). Publish true facts about your own product, never claims about competitors.

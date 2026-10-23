@@ -2,7 +2,7 @@ import { Heart } from 'lucide-react'
 import { api } from '../api'
 import { navigate } from '../router'
 import { Badge, Card } from '../widgets'
-import { money } from '../components'
+import { DemandBadge, money } from '../components'
 
 // The store's product card is just the generic <Card> filled with product data.
 export default function ProductCard({ p, run }) {
@@ -13,7 +13,11 @@ export default function ProductCard({ p, run }) {
   let action
   if (multi) action = <button className="w-btn outline block" onClick={() => navigate('/product/' + p.id)}>Choose option</button>
   else if (v.quantity > 0) action = <button className="w-btn primary block" onClick={() => run(() => api.addToCart(v.id, 1), 'Added to cart')}>Add to cart</button>
-  else action = <button className="w-btn outline block" disabled>Out of stock</button>
+  else action = (
+    <button className="w-btn outline block" disabled={v.pending_notifications > 0} onClick={() => run(() => api.notifyWhenAvailable(v.id), "We'll notify you when it's back")}>
+      {v.pending_notifications > 0 ? 'Notification set' : 'Notify me'}
+    </button>
+  )
 
   return (
     <Card
@@ -21,7 +25,7 @@ export default function ProductCard({ p, run }) {
       image={p.image} alt={p.name} ratio="var(--img-ratio)" href={'#/product/' + p.id}
       eyebrow={p.category} title={p.name}
       price={(multi ? 'From ' : '') + money(p.price_from)}
-      badges={stock}
+      badges={<>{stock}{p.high_demand && <DemandBadge />}</>}
       corner={
         <button className={'w-heart' + (v.wishlisted ? ' on' : '')} aria-label={v.wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
           onClick={() => run(() => (v.wishlisted ? api.removeFromWishlist(v.id) : api.addToWishlist(v.id)), v.wishlisted ? '' : 'Saved to wishlist')}>

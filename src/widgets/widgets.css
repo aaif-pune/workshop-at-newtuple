@@ -25,12 +25,10 @@
 .w-card-text{margin:0;color:var(--mute);font-size:13px}.w-card-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.w-card-actions{margin-top:auto;padding-top:8px}
 .w-heart{width:34px;height:34px;border-radius:50%;border:0;background:var(--card);color:var(--mute);display:grid;place-items:center;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}.w-heart.on{color:#d6336c}
 
-.w-hero{display:grid;grid-template-columns:1fr 1.05fr;height:var(--hero-h,380px);background:var(--hero-bg);color:var(--hero-ink);border-radius:var(--r);overflow:hidden;margin-bottom:28px}
-.w-hero-text{padding:clamp(24px,4vw,56px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:14px;min-width:0;overflow:hidden}
-.w-hero-text h1{margin:0;font-size:clamp(26px,3.4vw,46px);line-height:1.1}.w-hero-text p{margin:0;max-width:44ch;opacity:.85;font-size:clamp(14px,1.3vw,16px)}
-/* The photo fills the cell and is cropped (object-fit), so it can never stretch the banner. */
-.w-hero-photo{position:relative;min-height:0}
-.w-hero-photo .w-photo{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;object-fit:cover}
+.w-hero{display:grid;grid-template-columns:1fr 1.05fr;background:var(--hero-bg);color:var(--hero-ink);border-radius:var(--r);overflow:hidden;margin-bottom:28px;min-height:340px}
+.w-hero-text{padding:48px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:14px}
+.w-hero-text h1{margin:0;font-size:clamp(28px,3.6vw,44px);line-height:1.1}.w-hero-text p{margin:0;max-width:44ch;opacity:.85;font-size:16px}
+.w-hero-photo .w-photo{height:100%;min-height:260px}
 
 .w-carousel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.w-carousel-head h2{margin:0}
 .w-carousel-head button{width:32px;height:32px;margin-left:6px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
@@ -71,10 +69,4 @@
 .w-notif-icon{flex:none;width:34px;height:34px;border-radius:50%;background:var(--brand);color:var(--on-brand);display:grid;place-items:center}
 .w-notif-text{display:flex;flex-direction:column;gap:2px;font-size:13px;min-width:0}.w-notif-text strong{font-size:14px}.w-notif-text span{color:var(--mute)}.w-notif-text small{color:var(--mute);font-size:11px}
 
-
-/* responsive: widgets */
-@media(max-width:1024px){.w-hero{--hero-h:320px}}
-@media(max-width:800px){.w-hero{grid-template-columns:1fr;grid-template-rows:250px 220px;height:auto}.w-hero-text{padding:24px}}
-@media(max-width:480px){.w-hero{grid-template-rows:280px 180px}.w-tile{width:140px}.w-card-body{padding:12px}.w-row{padding:10px}.w-row-img{width:60px;height:60px}}
-@media(max-width:600px){.w-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.w-card-title{font-size:14px}.w-row-right,.w-row-actions{width:100%;justify-content:space-between}}
-@media(pointer:coarse){.w-btn{min-height:44px}.w-stepper button{width:42px;height:42px}.w-radio{padding:4px 0}.w-heart{width:40px;height:40px}}
+@media(max-width:800px){.w-hero{grid-template-columns:1fr}.w-hero-text{padding:28px}.w-hero-photo .w-photo{min-height:200px}}

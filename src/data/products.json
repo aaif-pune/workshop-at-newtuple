@@ -32,7 +32,9 @@
     "price": 8499,
     "quantity": 3
    }
-  ]
+  ],
+  "seller": "ShopWave Originals",
+  "kind": "headphones"
  },
  {
   "id": 2,
@@ -67,7 +69,8 @@
     "price": 19499,
     "quantity": 1
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 3,
@@ -94,7 +97,8 @@
     "price": 3499,
     "quantity": 9
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 4,
@@ -121,7 +125,8 @@
     "price": 2299,
     "quantity": 0
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 5,
@@ -149,7 +154,8 @@
     "price": 54999,
     "quantity": 2
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 6,
@@ -176,7 +182,8 @@
     "price": 1799,
     "quantity": 34
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 7,
@@ -217,7 +224,8 @@
     "price": 599,
     "quantity": 0
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 8,
@@ -258,7 +266,8 @@
     "price": 1799,
     "quantity": 0
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 9,
@@ -299,7 +308,8 @@
     "price": 2999,
     "quantity": 0
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 10,
@@ -325,7 +335,8 @@
     "price": 899,
     "quantity": 22
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 11,
@@ -351,7 +362,8 @@
     "price": 1499,
     "quantity": 0
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 12,
@@ -371,7 +383,8 @@
     "price": 2499,
     "quantity": 16
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 13,
@@ -398,7 +411,8 @@
     "price": 1099,
     "quantity": 8
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 14,
@@ -424,7 +438,8 @@
     "price": 1399,
     "quantity": 0
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 15,
@@ -450,7 +465,8 @@
     "price": 999,
     "quantity": 26
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 16,
@@ -476,7 +492,8 @@
     "price": 849,
     "quantity": 17
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 17,
@@ -502,7 +519,8 @@
     "price": 749,
     "quantity": 0
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 18,
@@ -521,7 +539,8 @@
     "price": 1299,
     "quantity": 12
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 19,
@@ -554,7 +573,8 @@
     "price": 699,
     "quantity": 0
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 20,
@@ -580,7 +600,8 @@
     "price": 5999,
     "quantity": 2
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 21,
@@ -606,7 +627,9 @@
     "price": 1099,
     "quantity": 19
    }
-  ]
+  ],
+  "seller": "ShopWave Originals",
+  "kind": "water bottle"
  },
  {
   "id": 22,
@@ -633,7 +656,8 @@
     "price": 699,
     "quantity": 6
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 23,
@@ -653,7 +677,8 @@
     "price": 499,
     "quantity": 0
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 24,
@@ -673,7 +698,8 @@
     "price": 1299,
     "quantity": 18
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 25,
@@ -693,7 +719,8 @@
     "price": 1499,
     "quantity": 9
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 26,
@@ -719,7 +746,8 @@
     "price": 649,
     "quantity": 0
    }
-  ]
+  ],
+  "seller": "ShopWave Originals"
  },
  {
   "id": 27,
@@ -744,6 +772,243 @@
     "label": "500 g",
     "price": 549,
     "quantity": 4
+   }
+  ],
+  "seller": "ShopWave Originals"
+ },
+ {
+  "id": 28,
+  "name": "TrailCo Summit Steel Bottle",
+  "category": "Sports & Fitness",
+  "seller": "TrailCo",
+  "kind": "water bottle",
+  "description": "Double-wall vacuum steel bottle built for treks and long hikes. Leak-proof lid with a carry loop and a powder-coated grip.",
+  "specs": {
+   "capacity": "750 ml",
+   "weight": "520 g",
+   "material": "18/8 stainless steel",
+   "insulation": "Cold 24 h, hot 12 h",
+   "leak_proof": "Yes",
+   "warranty": "2 years"
+  },
+  "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8",
+  "variants": [
+   {
+    "id": 59,
+    "sku": "TC-028-1",
+    "label": "750 ml",
+    "price": 1299,
+    "quantity": 40
+   }
+  ],
+  "aeo": {
+   "summary": "A leak-proof 750 ml steel bottle for treks and hikes. Keeps water cold for 24 hours and weighs 520 g.",
+   "faqs": [
+    {
+     "q": "Is it leak-proof?",
+     "a": "Yes. The screw lid has a silicone seal and is tested upside down in a backpack."
+    },
+    {
+     "q": "Can it carry hot drinks?",
+     "a": "Yes, it keeps drinks hot for 12 hours."
+    },
+    {
+     "q": "Does it fit a backpack side pocket?",
+     "a": "Yes, it is 7.2 cm wide."
+    }
+   ],
+   "keywords": [
+    "trekking bottle",
+    "hiking",
+    "insulated",
+    "leak-proof",
+    "steel"
+   ],
+   "best_for": [
+    "trekking",
+    "hiking",
+    "camping"
+   ]
+  }
+ },
+ {
+  "id": 29,
+  "name": "HydroPeak Daily Insulated Bottle",
+  "category": "Sports & Fitness",
+  "seller": "HydroPeak",
+  "kind": "water bottle",
+  "description": "A 1 litre insulated bottle for the office and the gym, with a wide mouth for ice and an easy-clean finish.",
+  "specs": {
+   "capacity": "1 L",
+   "weight": "480 g",
+   "material": "Stainless steel",
+   "insulation": "Cold 18 h, hot 8 h",
+   "leak_proof": "Yes",
+   "warranty": "1 year"
+  },
+  "image": "https://images.unsplash.com/photo-1605714312496-01e90cb509cc",
+  "variants": [
+   {
+    "id": 60,
+    "sku": "HP-029-1",
+    "label": "1 L",
+    "price": 1449,
+    "quantity": 25
+   }
+  ],
+  "aeo": {
+   "summary": "A 1 litre insulated bottle for office days and gym sessions. Cold for 18 hours, wide mouth for ice.",
+   "faqs": [
+    {
+     "q": "Is it dishwasher safe?",
+     "a": "The lid is. Hand-wash the body."
+    },
+    {
+     "q": "Will it fit a car cup holder?",
+     "a": "No, it is 9 cm wide."
+    },
+    {
+     "q": "Is it leak-proof?",
+     "a": "Yes, with the lid fully closed."
+    }
+   ],
+   "keywords": [
+    "office bottle",
+    "gym bottle",
+    "1 litre",
+    "insulated"
+   ],
+   "best_for": [
+    "office",
+    "gym"
+   ]
+  }
+ },
+ {
+  "id": 30,
+  "name": "AquaKids Flip-Straw School Bottle",
+  "category": "Sports & Fitness",
+  "seller": "AquaKids",
+  "kind": "water bottle",
+  "description": "A light 500 ml school water bottle for children, with a flip straw lid that locks shut and a carry handle. Not insulated.",
+  "specs": {
+   "capacity": "500 ml",
+   "weight": "180 g",
+   "material": "BPA-free Tritan plastic",
+   "insulation": "Not insulated",
+   "leak_proof": "Yes, locking straw lid",
+   "warranty": "6 months"
+  },
+  "image": "https://images.unsplash.com/photo-1625708458528-802ec79b1ed8",
+  "variants": [
+   {
+    "id": 61,
+    "sku": "AK-030-1",
+    "label": "500 ml",
+    "price": 499,
+    "quantity": 60
+   }
+  ],
+  "aeo": {
+   "summary": "A 180 g, 500 ml school bottle for kids with a locking flip straw. Made of BPA-free Tritan; not insulated.",
+   "faqs": [
+    {
+     "q": "Is it safe for children?",
+     "a": "Yes, it is made of BPA-free Tritan plastic."
+    },
+    {
+     "q": "Will it leak in a school bag?",
+     "a": "Not when the straw lid is locked."
+    },
+    {
+     "q": "Does it keep drinks cold?",
+     "a": "No, it is not insulated."
+    }
+   ],
+   "keywords": [
+    "kids bottle",
+    "school bottle",
+    "straw bottle",
+    "lightweight"
+   ],
+   "best_for": [
+    "school",
+    "kids"
+   ]
+  }
+ },
+ {
+  "id": 31,
+  "name": "FlexGym Shaker Bottle 1 L",
+  "category": "Sports & Fitness",
+  "seller": "FlexGym",
+  "kind": "water bottle",
+  "description": "A 1 litre gym bottle with a mixing ball for protein shakes, measurement marks and a screw lid. Not insulated.",
+  "specs": {
+   "capacity": "1 L",
+   "weight": "210 g",
+   "material": "BPA-free plastic",
+   "insulation": "Not insulated",
+   "leak_proof": "Yes, screw lid",
+   "warranty": "No warranty"
+  },
+  "image": "https://images.unsplash.com/photo-1775199603078-e1d964929e10",
+  "variants": [
+   {
+    "id": 62,
+    "sku": "FG-031-1",
+    "label": "1 L",
+    "price": 599,
+    "quantity": 45
+   }
+  ],
+  "aeo": {
+   "summary": "A 1 litre gym shaker bottle with a mixing ball and measurement marks. Weighs 210 g; not insulated.",
+   "faqs": [
+    {
+     "q": "Can I mix protein shakes in it?",
+     "a": "Yes, it has a steel mixing ball."
+    },
+    {
+     "q": "Is it dishwasher safe?",
+     "a": "Yes, top rack only."
+    },
+    {
+     "q": "Does it keep water cold?",
+     "a": "No, it is not insulated."
+    }
+   ],
+   "keywords": [
+    "shaker bottle",
+    "protein shaker",
+    "gym bottle",
+    "1 litre"
+   ],
+   "best_for": [
+    "gym",
+    "protein shakes"
+   ]
+  }
+ },
+ {
+  "id": 32,
+  "name": "GlassPure Office Bottle 750 ml",
+  "category": "Sports & Fitness",
+  "seller": "GlassPure",
+  "kind": "water bottle",
+  "description": "Glass water bottle with a silicone sleeve.",
+  "specs": {
+   "capacity": "750 ml",
+   "material": "Borosilicate glass"
+  },
+  "image": "https://images.unsplash.com/photo-1595994195534-d5219f02f99f",
+  "variants": [
+   {
+    "id": 63,
+    "sku": "GP-032-1",
+    "label": "750 ml",
+    "price": 899,
+    "quantity": 30
    }
   ]
  }

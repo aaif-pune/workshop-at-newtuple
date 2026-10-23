@@ -2,7 +2,7 @@ import { api } from '../api'
 import { useApi } from '../hooks'
 import { navigate } from '../router'
 import { ListRow } from '../widgets'
-import { Empty, StockBadge, money } from '../components'
+import { DemandBadge, Empty, StockBadge, money } from '../components'
 
 export default function Wishlist({ run }) {
   const items = useApi(api.getWishlist, [], [])
@@ -14,12 +14,12 @@ export default function Wishlist({ run }) {
           {items.map((i) => (
             <ListRow key={i.id} image={i.image} title={i.product_name} href={'#/product/' + i.product_id}
               meta={`${i.label} · ${i.sku}`}
-              badges={<StockBadge v={i} />}
+              badges={<><StockBadge v={i} />{i.high_demand && <DemandBadge />}</>}
               right={<strong>{money(i.price)}</strong>}
               actions={<>
                 {i.quantity > 0
                   ? <button className="w-btn primary" onClick={async () => { if (await run(() => api.addToCart(i.id, 1), 'Added to cart')) navigate('/cart') }}>Add to cart</button>
-                  : <button className="w-btn primary" disabled>Out of stock</button>}
+                  : <button className="w-btn primary" disabled={i.pending_notifications > 0} onClick={() => run(() => api.notifyWhenAvailable(i.id), "We'll notify you")}>{i.pending_notifications > 0 ? 'Notification set' : 'Notify me'}</button>}
                 <button className="w-btn ghost" onClick={() => run(() => api.removeFromWishlist(i.id))}>Remove</button>
               </>} />
           ))}
