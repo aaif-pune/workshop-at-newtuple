@@ -1,4 +1,4 @@
-# 🛍️ MCP server and MCP App prompts
+# MCP server and MCP App prompts
 
 Three prompts, one per stage. Paste them into your coding agent (Claude, ChatGPT, or any open-source agent) one at a time, in the same chat and repository. Validate each stage before you move to the next.
 
@@ -23,7 +23,7 @@ flowchart LR
 
 ---
 
-## 🧱 Stage 1: MCP server
+## Stage 1: MCP server
 
 ```text
 We finished WebMCP in this React ShopWave repo. Add an MCP server that
@@ -95,7 +95,7 @@ show_checkout failing on an empty cart. Don't infer success from reading
 the source.
 ```
 
-### ✅ Validate Stage 1
+### Validate Stage 1
 
 Everything runs locally in this stage. Start the server with `npm run start:mcp` and keep it running.
 
@@ -117,7 +117,7 @@ curl -s http://127.0.0.1:3001/mcp \
 
 ---
 
-## 🖼️ Stage 2: MCP App
+## Stage 2: MCP App
 
 The store already has a widget library in `src/widgets/`, which the MCP App reuses instead of building new UI. To browse the widgets, run `npm run dev` and open **Component library** in the footer.
 
@@ -237,7 +237,7 @@ inventory, alerts, product editing, reset or comparison screens. List the
 files you created with their line counts.
 ```
 
-### ✅ Validate Stage 2 locally
+### Validate Stage 2 locally
 
 | Check | How | Expected |
 | --- | --- | --- |
@@ -249,7 +249,7 @@ files you created with their line counts.
 | Works in the preview | `npm run preview:mcp` | Cards load; the dropdown switches views; View options → Save → Add to cart → checkout → Orders works |
 | Server still guards | In the preview, with an empty cart, pick **Open checkout** | "Add a product to your cart before checkout." |
 
-### 🔌 Connect ShopWave to ChatGPT and Claude
+### Connect ShopWave to ChatGPT and Claude
 
 ChatGPT and Claude reach your server from the internet, so ngrok gives it a public HTTPS address.
 
@@ -294,7 +294,7 @@ You'll chat with ShopWave in Stage 3.
 
 ---
 
-## 🎬 Stage 3: Demo
+## Stage 3: Demo
 
 ```text
 We demo ShopWave live in ChatGPT and Claude next. Don't add features or
@@ -327,7 +327,7 @@ Report a table of step, tool, expected, actual, pass/fail. Then list the
 exact terminal commands to run before I go on stage.
 ```
 
-### ✅ Validate Stage 3 (pre-flight)
+### Validate Stage 3 (pre-flight)
 
 - [ ] The agent's table is all **pass**
 - [ ] Terminal 1: `npm run start:mcp`, freshly restarted (seed stock, empty cart, no orders)
@@ -336,7 +336,7 @@ exact terminal commands to run before I go on stage.
 - [ ] A new chat open in ChatGPT and in Claude, with ShopWave Demo selected
 - [ ] Fallback ready: `npm run preview:mcp` or `dist/mcp-preview/preview.html`
 
-### 💬 Chat with ShopWave in ChatGPT and Claude
+### Chat with ShopWave in ChatGPT and Claude
 
 Open a new chat, select **ShopWave Demo** (ChatGPT: **+** or `@`; Claude: **+ → Connectors**), and start with:
 
@@ -354,23 +354,23 @@ Open a new chat, select **ShopWave Demo** (ChatGPT: **+** or `@`; Claude: **+ �
 | *Show my orders.* | `get_orders` | "No orders yet." |
 | In Claude, after adding to the cart in ChatGPT: *What's in my cart?* | `get_cart` | The same cart: both hosts share one shop |
 
-**Live demo script.** Type the 💬 lines in the chat and do the 🖱️ lines in the widget:
+**Live demo script.** *Chat* rows are typed in the chat; *Widget* rows are clicks and entries in the store UI:
 
-| # | Do this | Tool | You should see |
-| --- | --- | --- | --- |
-| 1 | 💬 *Show me Electronics under ₹9,000, cheapest first.* | `search_products` | Filtered cards with stock badges |
-| 2 | 🖱️ **View options** on the headphones | `get_product` | Photos, specs and three colours |
-| 3 | 💬 *Is the black one available?* | `check_availability` | Black is out of stock |
-| 4 | 🖱️ Choose **Blue**, **Save to wishlist** | `add_to_wishlist` | Wishlist (1) |
-| 5 | 💬 *Show my wishlist.* | `get_wishlist` | Blue headphones saved |
-| 6 | 🖱️ **Add to cart**, then raise the quantity to 3 in the cart | `add_to_cart`, `set_cart_quantity` | Total ₹25,497 |
-| 7 | 💬 *Add 999 more.* | `add_to_cart` | Error: only 3 available |
-| 8 | 💬 *Remove them from my wishlist and show my cart.* | `remove_from_wishlist`, `get_cart` | Wishlist (0), cart unchanged |
-| 9 | 🖱️ **Continue to checkout** | `show_checkout` | Cart plus the details form |
-| 10 | 🖱️ Fill in the details, tick the box, **Place demo order** | `place_order` | Order ID, Cart (0) |
-| 11 | 💬 *Show my orders.* | `get_orders` | Order card, no customer details |
-| 12 | 💬 *Show the headphones again.* | `get_product` | Blue is now out of stock |
-| 13 | 💬 *Open checkout.* | `show_checkout` | "Add a product to your cart before checkout." |
+| # | Where | Do this | Tool | You should see |
+| --- | --- | --- | --- | --- |
+| 1 | Chat | *Show me Electronics under ₹9,000, cheapest first.* | `search_products` | Filtered cards with stock badges |
+| 2 | Widget | **View options** on the headphones | `get_product` | Photos, specs and three colours |
+| 3 | Chat | *Is the black one available?* | `check_availability` | Black is out of stock |
+| 4 | Widget | Choose **Blue**, **Save to wishlist** | `add_to_wishlist` | Wishlist (1) |
+| 5 | Chat | *Show my wishlist.* | `get_wishlist` | Blue headphones saved |
+| 6 | Widget | **Add to cart**, then raise the quantity to 3 in the cart | `add_to_cart`, `set_cart_quantity` | Total ₹25,497 |
+| 7 | Chat | *Add 999 more.* | `add_to_cart` | Error: only 3 available |
+| 8 | Chat | *Remove them from my wishlist and show my cart.* | `remove_from_wishlist`, `get_cart` | Wishlist (0), cart unchanged |
+| 9 | Widget | **Continue to checkout** | `show_checkout` | Cart plus the details form |
+| 10 | Widget | Fill in the details, tick the box, **Place demo order** | `place_order` | Order ID, Cart (0) |
+| 11 | Chat | *Show my orders.* | `get_orders` | Order card, no customer details |
+| 12 | Chat | *Show the headphones again.* | `get_product` | Blue is now out of stock |
+| 13 | Chat | *Open checkout.* | `show_checkout` | "Add a product to your cart before checkout." |
 
 Fictional details: `Demo Shopper` · `demo@example.com` · `9999999999` · `1 Demo Road` · `Pune` · `411001`.
 
@@ -383,7 +383,7 @@ Fictional details: `Demo Shopper` · `demo@example.com` · `9999999999` · `1 De
 
 ---
 
-## 🆘 Stuck? Try these in order
+## Stuck? Try these in order
 
 ### Level 1: the fix-it prompt (any stage)
 
