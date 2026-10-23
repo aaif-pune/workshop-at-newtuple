@@ -174,7 +174,28 @@ Bridge (mcp-app/bridge.js): createBridge(onResult, onStatus)
 - resize(height) sends ui/notifications/size-changed; dispose() removes the
   listener and clears pending timers.
 
-App (mcp-app/index.html, main.jsx, style.css)
+App structure (small files, one job each; none over ~80 lines)
+- main.jsx only imports the CSS and mounts <App />. No views, hooks or
+  helpers in it.
+- App.jsx: the shell (header, nav, progress, errors) and the view lookup.
+- useStore.js: a useStore() hook that owns the bridge, the snapshot, busy
+  and error state, plus run(name, args) and a RunProvider/useRun() context
+  so components call tools without prop drilling. Progress text lives in
+  ONE map keyed by tool name, not in every button.
+- format.js: only plural(); money and stock labels come from
+  src/components.jsx.
+- components/: app-only pieces used in more than one place or with their
+  own state: ToolButton (a w-btn that calls one tool), Nav, FilterForm,
+  Gallery, CartLines (rows + server total, editable or read-only) and
+  OrderCard.
+- views/: one file per structuredContent.view (Catalog, Product, Wishlist,
+  Cart, Checkout, Confirmation, Orders) and views/index.js exporting a
+  VIEWS map plus viewKey(snap), which resets local state when the product
+  or filters change.
+- Components compose the src/widgets/ pieces. Repeated markup becomes a
+  component, not copy-paste.
+
+App behavior (mcp-app/index.html, style.css and the files above)
 - Render from structuredContent.view. A ResizeObserver reports height.
 - Header "ShopWave · Demo store", a notice "No payment or delivery", and a
   nav: Products, Wishlist (n), Cart (n), Orders, all from the snapshot.
@@ -190,8 +211,10 @@ App (mcp-app/index.html, main.jsx, style.css)
 - cart: ListRow per line with a Stepper (min 0, calls set_cart_quantity),
   subtotal, Remove, the item count and server total, and "Continue to
   checkout" (show_checkout).
-- checkout: the same cart rows plus six fictional-detail fields and an
-  "I reviewed this cart and confirm a demo order" checkbox. The Place demo
+- checkout: the same cart rows (read-only, with an Edit cart button,
+  because a quantity change returns the cart view) plus six
+  fictional-detail fields and an "I reviewed this cart and confirm a demo
+  order" checkbox. The Place demo
   order button stays disabled until it is ticked, then calls place_order
   with { customer, confirmed }. Editing a field unticks it.
 - confirmation: order ID, date, total, items, "No payment taken, shipment
@@ -211,7 +234,7 @@ ui://shopwave/store.html and a tools/list with _meta.ui.resourceUri on every
 tool. In the preview walk through View options -> Save -> Add to cart ->
 change quantity -> Continue to checkout -> place order -> Orders. No
 inventory, alerts, product editing, reset or comparison screens. List the
-files you created.
+files you created with their line counts.
 ```
 
 ### ✅ Validate Stage 2 locally
@@ -219,6 +242,8 @@ files you created.
 | Check | How | Expected |
 | --- | --- | --- |
 | App builds as one file | `npm run build` | `dist/mcp-app/index.html` exists with no separate JS or CSS files |
+| No duplicate helpers | `grep -rn "NumberFormat\|Low stock\|--bg:#faf8f5" mcp-app` | No matches: money, labels and tokens are imported from `src/` |
+| App is split into components | `wc -l mcp-app/*.js* mcp-app/components/* mcp-app/views/*` | `main.jsx` only mounts `<App />`; one file per view; no file over ~80 lines |
 | UI is served | The agent's `resources/read` | HTML with MIME type `text/html;profile=mcp-app` |
 | Tools point at the UI | The agent's `tools/list` | Every tool has `_meta.ui.resourceUri` = `ui://shopwave/store.html` |
 | Works in the preview | `npm run preview:mcp` | Cards load; the dropdown switches views; View options → Save → Add to cart → checkout → Orders works |
@@ -365,7 +390,8 @@ Fictional details: `Demo Shopper` · `demo@example.com` · `9999999999` · `1 De
 ```text
 Fix only the current stage. Run its build or check, show me the FIRST
 failing command and error, and make the smallest change that fixes it.
-Don't rewrite working tools or add features outside the prompt.
+Don't rewrite working tools or add features outside the prompt. No code
+duplication: fix the existing code in place, never add a second copy.
 ```
 
 ### Level 2: match what you see
