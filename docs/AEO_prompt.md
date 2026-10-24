@@ -35,7 +35,7 @@ Both are already on the site, ids 29 and 28.
 | variants | Black strap 4,999 (20) · Blue strap 4,999 (6) | Black strap 4,999 (20) · Blue strap 4,999 (6) |
 | faq | none | 5 questions, listed below |
 
-Product B's FAQ (these are the only questions the demo uses):
+Product B's FAQ (used only in Part 2, for Product B; never offered for Product A):
 
 | Question | Answer on Product B's page |
 |---|---|
@@ -75,19 +75,17 @@ Say something like:
 
 > "Now, a customer doesn't browse to product 29. They ask the site a question. If I ask the way a real customer asks, this product will not come back, because the facts the question needs are not in its metadata. Here are some questions a customer might type."
 
-Offer **only these five questions**. They are the FAQ questions on the correct product's page (Product B, id 28), so they are the real questions customers ask about this kind of watch. Do not draft your own questions and do not reword these. Ask the presenter to pick one of the five (or to run all five in order). If the presenter suggests a different question, say that for this demo the questions must come from this list, and ask them to pick one.
+**For Product A, do not recommend any of the five FAQ questions.** Those belong to Part 2. For Product A, recommend other questions: ones a real customer would type into a shop, that need a concrete fact Product A's page does not have. Draft them from Product B's spec fields, but keep them clearly different from the FAQ wording. Do not reuse an FAQ question or a rewording of one.
 
-1. "Does it work with an iPhone?"
-2. "How long does the battery last?"
-3. "Can I wear it while swimming?"
-4. "Do I need to carry my phone for GPS?"
-5. "What health data does it track?"
+Recommend these three (or three of your own that follow the same rule):
 
-Each of these is answered, word for word, on Product B's page, and none of them is answered on Product A's page. Product A has no compatibility, no battery figure (just "long lasting"), no water rating (just "100% waterproof"), no GPS and no sensor list (just "tracks everything").
+1. "Which smartwatch supports Bluetooth 5.3 and comes with a 1-year warranty?"
+2. "Show me a smartwatch with a 1.43-inch AMOLED display and built-in GPS."
+3. "Do you have a smartwatch with SpO2 and heart-rate tracking for Android 8?"
 
-For the opening search, recommend question 1 or question 4. Those are the cleanest misses: nothing on Product A's page hints at iPhone compatibility or built-in GPS. Questions 2 and 3 can brush against "super long battery" and "100% waterproof"; run them after a clean miss has landed, and if one of them returns Product A, use the "Product A comes back" rule below.
+Each one needs facts Product A's page does not state: no Bluetooth version, no warranty, no display size or panel type, no GPS, no sensor list, no compatibility. Avoid questions that only lean on battery or water resistance, because Product A's "super long battery" and "100% waterproof" can loosely match those.
 
-Note that the question is phrased as "it" because it comes from a product FAQ. Pass it to `search_products` exactly as written; do not expand "it" into "smartwatch".
+**The presenter picks exactly one.** Say so when you offer the list: "Pick one of these three." Run only that one in Part 1. If the presenter asks for two or more at once, say you'll run one first and offer the others at the end. If the presenter suggests a question of their own, accept it only if it is not an FAQ question and needs a fact Product A lacks; otherwise ask them to pick from the three.
 
 ### 1.5 Run the search
 
@@ -95,15 +93,15 @@ Call the WebMCP `search_products` tool with the chosen query, word for word. Do 
 
 Then explain the miss, in this shape:
 
-> **I asked:** "Does it work with an iPhone?"
+> **I asked:** "Which smartwatch supports Bluetooth 5.3 and comes with a 1-year warranty?"
 >
 > **Result:** Smart Watch Pro Max Ultra did not come back.
 >
-> **Why:** The question needed phone compatibility. This product's page says nothing about iPhone, iOS, Android or Bluetooth. Its specs are "battery: long lasting", "display: HD", "features: all features". "All features" does not tell the AI that iPhone pairing is one of them.
+> **Why:** The question needed a Bluetooth version and a warranty. This product's page has neither. Its specs are "battery: long lasting", "display: HD", "features: all features". "All features" does not tell the AI that Bluetooth 5.3 or a warranty is one of them.
 >
 > **And yet:** it is live, in stock, 26 units, 4,999. The customer who asked this never saw it.
 
-Always name the exact field and quote the page's actual wording. Never say "the data was incomplete". If the presenter wants another query, run it the same way.
+Always name the exact field and quote the page's actual wording. Never say "the data was incomplete".
 
 **What "did not come back" means.** Look at the shape of what `search_products` returns before you judge:
 
@@ -132,13 +130,29 @@ Same as 1.2, read it exactly as the page shows it:
 
 Then point out in one or two sentences: same price, same colours, same stock as the first watch. The only difference is that every spec here is a concrete fact.
 
-### 2.3 Pause
+### 2.3 Set up the search
 
-Ask: **"See the difference? Shall I run the same question?"** Wait for a yes.
+Say something like:
 
-### 2.4 Run the same search
+> "This product has an FAQ on its page. Those are the questions real customers ask. Let's ask one of them and see if the site finds it."
 
-Call the WebMCP `search_products` tool with the exact same query you used in 1.5. Show what came back.
+**For Product B, recommend only the five FAQ questions from Product B's page.** Do not reuse the Product A question here, and do not draft new ones. Offer them exactly as written:
+
+1. "Does it work with an iPhone?"
+2. "How long does the battery last?"
+3. "Can I wear it while swimming?"
+4. "Do I need to carry my phone for GPS?"
+5. "What health data does it track?"
+
+**The presenter picks exactly one.** Say so: "Pick one of these five." If the presenter asks for more, say you'll run one now and offer the rest at the end. If they suggest a question that is not on the list, say that for this part the questions come from the product's own FAQ, and ask them to pick one.
+
+The question is phrased as "it" because it comes from the FAQ. Pass it to `search_products` exactly as written; do not expand "it" into "smartwatch".
+
+Wait for the pick.
+
+### 2.4 Run the search
+
+Call the WebMCP `search_products` tool with the chosen FAQ question, word for word. Show what came back.
 
 Explain the hit:
 
@@ -150,19 +164,27 @@ Explain the hit:
 
 Point out that the question was answered on Product B's own page before anyone asked it. That is what good metadata looks like: the FAQ is the customer's question, written down in advance.
 
-Then put the two side by side in two sentences: same question, same shelf, same price. One watch invisible, one found. The difference is the metadata.
+Then put the two side by side in two sentences: two watches on the same shelf at the same price. The one that answered a customer's question in its metadata was found; the one that only had slogans was not.
 
-If the presenter ran more than one query in Part 1, run each of them again here, in the same order.
+Run only the one FAQ question the presenter picked. Do not run the other four here.
 
 ---
 
 ## Part 3: Close
 
-Give the room a short summary, three or four sentences, no bullet points:
+End with four short blocks, in this order, each one or two sentences. Build every block from what actually happened in this session: the two questions the presenter picked (one for A, one for B), the fields you quoted from each product when it opened, and the results `search_products` returned. Do not reuse wording from earlier in this file; the products and the questions may be different next time.
 
-Both watches were on the site the whole time, at the same price, in the same colours, with the same stock. The AI never showed the first one because the facts customers ask about were missing or replaced with hype. The second one was found every time because its page answered the question before it was asked. For AEO, the product metadata is the product: if a field is empty or says "all features", the AI treats it as if the product does not have that feature.
+1. **Why Product A did not come back.** Name the fact the Product A question needed. State that A's page does not have it, and quote what A's page says instead (the slogan, the vague spec, or nothing). End with: a fact that is not written down does not exist to the AI.
 
-Then offer to run any of the five FAQ questions that have not been run yet. Do not draft new questions.
+2. **What was different about Product B.** First say what was the same (category, price, colours, stock), so the room knows it is a fair comparison. Then quote the exact field(s) and the FAQ answer on B's page that answered the Product B question, and note that B's page also states the fact the Product A question needed.
+
+3. **Why that made B discoverable.** One or two sentences. The AI matches the customer's question to facts on the page; it does not guess. B had the facts, so B was the answer. A had words, not facts, so A was skipped.
+
+4. **What this means in real life.** Tie it to the questions that were run: a customer asking either of them is close to buying, and A loses that sale every time, not because the product is worse but because its page never said so. Then widen it once: this repeats for every question customers ask and every AI channel they ask it on. Close with the fix in one line: write down the facts, not the slogans.
+
+Keep the whole close under 150 words. No bullet points inside the blocks. No new claims that were not shown on screen during the session.
+
+Then offer to run any of the remaining Product A questions or FAQ questions that have not been run yet. Do not draft new FAQ questions.
 
 ---
 
@@ -171,9 +193,10 @@ Then offer to run any of the five FAQ questions that have not been run yet. Do n
 - **The WebMCP open-product tool fails or returns nothing for id 29 or 28.** Show the exact tool call and what came back, and ask the presenter how to proceed. Do not fall back to navigating by URL or to the data in this file.
 - **No WebMCP tool opens a product.** List the tools that are exposed and ask the presenter which to use. Do not use a generic browser tool instead.
 - **What the tool returns differs from the table above.** Use what the tool actually returned in your explanations. Flag the difference to the presenter in one line.
-- **Product A comes back for a question.** Say so plainly. Set that question aside and ask the presenter to pick another from the five (question 1 "Does it work with an iPhone?" and question 4 "Do I need to carry my phone for GPS?" are the cleanest misses). Do not invent a new question. Do not pretend the miss happened.
+- **Product A comes back for a question.** Say so plainly. Set that question aside and ask the presenter to pick another of the Product A questions, preferring one that needs Bluetooth version, warranty, GPS or compatibility (facts A's page has no trace of). Never switch to an FAQ question for Product A. Do not pretend the miss happened.
 - **Product B does not come back.** Show the raw result. Run the same FAQ question once more, unchanged. If it still fails, tell the presenter and let them decide. Do not reword the question and do not fabricate a result.
-- **The presenter asks a question that is not on the list.** Say that for this demo the questions come from Product B's FAQ, show the five again, and ask them to pick one.
+- **The presenter asks for an FAQ question during Part 1.** Say the FAQ questions are for the second product and offer the Product A questions again.
+- **The presenter asks a non-FAQ question during Part 2.** Say that for this part the questions come from the product's own FAQ, show the five again, and ask them to pick one.
 - **`search_products` errors.** Show the error, retry the same WebMCP call once, then stop and ask the presenter.
 - **The presenter skips a pause.** Follow their lead, but still do each step in order: open, read, search, explain.
 
