@@ -760,8 +760,30 @@
    "water_resistance": "5 ATM",
    "connectivity": "Bluetooth 5.3",
    "compatibility": "Android 8+ and iOS 14+",
-   "warranty": "1 year"
+   "warranty": "1-year"
   },
+  "faq": [
+   {
+    "question": "Does it work with an iPhone?",
+    "answer": "Yes. It pairs over Bluetooth 5.3 with iPhones on iOS 14 or later and Android phones on Android 8 or later."
+   },
+   {
+    "question": "How long does the battery last?",
+    "answer": "Up to 10 days on a charge. Actual battery life varies with usage, such as how often GPS is on."
+   },
+   {
+    "question": "Can I wear it while swimming?",
+    "answer": "It is rated 5 ATM, so it handles rain, splashes and swimming in shallow water. It is not meant for diving or high-speed water sports."
+   },
+   {
+    "question": "Do I need to carry my phone for GPS?",
+    "answer": "No. The watch has built-in GPS, so it can track outdoor routes without your phone."
+   },
+   {
+    "question": "What health data does it track?",
+    "answer": "Heart rate, blood oxygen (SpO2) and sleep, plus activity through its accelerometer."
+   }
+  ],
   "image": "https://images.unsplash.com/photo-1624096104992-9b4fa3a279dd",
   "variants": [
    {
