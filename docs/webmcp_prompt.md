@@ -14,8 +14,12 @@ Three short prompts, one per stage. Paste them into your coding agent (Claude, C
 This is a React storefront. Shop logic is in src/api.js.
 Add src/webmcp.js, started from src/App.jsx, and register three read-only
 WebMCP tools using api.js:
-
-- search_products: query, category, status, min_price, max_price, sort
+- search_products: query, category, status, min_price, max_price, sort.
+  The query should search all of a product's details, not just its name:
+  name, category, description, specs, FAQ questions and answers, and
+  variant labels and SKUs. Ignore upper/lower case. A shopper asking for
+  "noise cancelling" or "40 hour battery" should find products that only
+  mention it in specs or FAQ.
 - get_product: product_id
 - check_availability: variant_id
 
